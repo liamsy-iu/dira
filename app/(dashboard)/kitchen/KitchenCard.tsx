@@ -30,10 +30,10 @@ const STATUS_CONFIG: Record<
   string,
   { label: string; next: OrderStatus | null; action: string; className: string }
 > = {
-  pending:    { label: 'New',        next: 'confirmed', action: 'Accept',         className: styles['status-pending'] },
-  confirmed:  { label: 'Accepted',   next: 'preparing', action: 'Start preparing', className: styles['status-confirmed'] },
-  preparing:  { label: 'Preparing',  next: 'ready',     action: 'Mark ready',     className: styles['status-preparing'] },
-  ready:      { label: 'Ready',      next: 'paid',      action: 'Complete',       className: styles['status-ready'] },
+  pending:    { label: 'New',        next: 'confirmed', action: 'Accept',          className: styles['status-pending']   ?? '' },
+  confirmed:  { label: 'Accepted',   next: 'preparing', action: 'Start preparing', className: styles['status-confirmed'] ?? '' },
+  preparing:  { label: 'Preparing',  next: 'ready',     action: 'Mark ready',      className: styles['status-preparing'] ?? '' },
+  ready:      { label: 'Ready',      next: 'paid',      action: 'Complete',        className: styles['status-ready']     ?? '' },
 }
 
 function getElapsed(createdAt: string, now: Date): { text: string; urgent: boolean } {
