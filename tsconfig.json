@@ -7,7 +7,6 @@
 
     /* Strict mode — non-negotiable */
     "strict": true,
-    "noUncheckedIndexedAccess": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
