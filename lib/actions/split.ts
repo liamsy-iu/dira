@@ -4,6 +4,14 @@ import { revalidatePath } from 'next/cache'
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { generateOrderRef } from '@/lib/utils'
 
+// Explicit type for Supabase product rows — service client loses type inference
+interface DbProduct {
+  id: string
+  name: string
+  price: number
+  is_available: boolean
+}
+
 export interface SplitEntry {
   index: number
   amount: number // in cents
@@ -37,18 +45,20 @@ export async function createSplitOrderAction(input: {
   const serviceSupabase = createServiceClient()
   const productIds = input.items.map((i) => i.productId)
 
-  const { data: products } = await serviceSupabase
+  const { data: productsData } = await serviceSupabase
     .from('products')
     .select('id, name, price, is_available')
     .in('id', productIds)
     .eq('business_id', business.id)
+
+  const products = productsData as DbProduct[] | null
 
   if (!products || products.length !== productIds.length) {
     return { error: 'One or more products not found.' }
   }
 
   const lineItems = input.items.map((item) => {
-    const product = products.find((p) => p.id === item.productId)!
+    const product = products.find((p: DbProduct) => p.id === item.productId)!
     return {
       product_id: item.productId,
       product_name: product.name,

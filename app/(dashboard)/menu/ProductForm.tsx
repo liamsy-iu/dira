@@ -20,7 +20,7 @@ const CATEGORY_SUGGESTIONS = [
   'Snacks', 'Desserts', 'Breakfast', 'Lunch', 'Specials',
 ]
 
-const initialState = { error: undefined as string | undefined, success: false }
+const initialState: { error: string | undefined; success: boolean } = { error: undefined, success: false }
 
 export function ProductForm({ open, onClose, product }: ProductFormProps) {
   const isEdit = !!product

@@ -1,7 +1,7 @@
+'use client'
+
 import { Compass, WifiOff } from 'lucide-react'
 import styles from './page.module.css'
-
-export const metadata = { title: 'Offline — Dira' }
 
 export default function OfflinePage() {
   return (

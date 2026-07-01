@@ -12,7 +12,7 @@ export default async function SettingsPage() {
 
   const { data: business } = await supabase
     .from('businesses')
-    .select('name, phone, email, kra_pin')
+    .select('name, address, phone, email, kra_pin')
     .eq('owner_id', user.id)
     .single()
 

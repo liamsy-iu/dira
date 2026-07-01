@@ -3,10 +3,12 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
+type AuthState = { error: string | undefined }
+
 export async function loginAction(
-  _prevState: { error?: string } | undefined,
+  _prevState: AuthState,
   formData: FormData
-) {
+): Promise<AuthState> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
@@ -15,14 +17,9 @@ export async function loginAction(
   }
 
   const supabase = await createClient()
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    // Don't leak whether the email exists — generic message
     return { error: 'Incorrect email or password. Please try again.' }
   }
 
@@ -30,9 +27,9 @@ export async function loginAction(
 }
 
 export async function signupAction(
-  _prevState: { error?: string } | undefined,
+  _prevState: AuthState,
   formData: FormData
-) {
+): Promise<AuthState> {
   const businessName = formData.get('business_name') as string
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -46,15 +43,10 @@ export async function signupAction(
   }
 
   const supabase = await createClient()
-
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: {
-        business_name: businessName,
-      },
-    },
+    options: { data: { business_name: businessName } },
   })
 
   if (error) {

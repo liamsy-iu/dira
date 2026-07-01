@@ -42,7 +42,7 @@ export function KitchenClient({ businessId }: { businessId: string }) {
       .in('status', ACTIVE_STATUSES)
       .order('created_at', { ascending: true })
 
-    setOrders((data as KitchenOrder[]) ?? [])
+    setOrders((data as unknown as KitchenOrder[]) ?? [])
     setLoading(false)
   }, [businessId, supabase])
 

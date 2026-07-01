@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button/Button'
 import { Input } from '@/components/ui/Input/Input'
 import styles from '../auth.module.css'
 
-const initialState = { error: undefined as string | undefined }
+const initialState: { error: string | undefined } = { error: undefined }
 
 export default function SignupPage() {
   const [state, formAction, isPending] = useActionState(

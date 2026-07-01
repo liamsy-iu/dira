@@ -21,7 +21,7 @@ interface TablesClientProps {
   baseUrl: string
 }
 
-const initialState = { error: undefined as string | undefined, success: false }
+const initialState: { error: string | undefined; success: boolean } = { error: undefined, success: false }
 
 export function TablesClient({ tables, baseUrl }: TablesClientProps) {
   const [modalOpen, setModalOpen] = useState(false)

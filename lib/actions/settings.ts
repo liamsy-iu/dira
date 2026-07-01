@@ -3,16 +3,18 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
+type SettingsState = { error: string | undefined; success: boolean }
+
 export async function updateSettingsAction(
-  _prev: { error?: string; success?: boolean } | undefined,
+  _prev: SettingsState,
   formData: FormData
-) {
+): Promise<SettingsState> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated.' }
+  if (!user) return { error: 'Not authenticated.', success: false }
 
   const name = (formData.get('name') as string)?.trim()
-  if (!name) return { error: 'Business name is required.' }
+  if (!name) return { error: 'Business name is required.', success: false }
 
   const { error } = await supabase
     .from('businesses')
@@ -26,9 +28,9 @@ export async function updateSettingsAction(
     })
     .eq('owner_id', user.id)
 
-  if (error) return { error: 'Failed to save settings.' }
+  if (error) return { error: 'Failed to save settings.', success: false }
 
   revalidatePath('/settings')
   revalidatePath('/')
-  return { success: true }
+  return { error: undefined, success: true }
 }

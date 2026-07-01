@@ -5,6 +5,14 @@ import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { generateOrderRef } from '@/lib/utils'
 import type { OrderStatus } from '@/lib/types/database.types'
 
+// Explicit type for Supabase product rows — service client loses type inference
+interface DbProduct {
+  id: string
+  name: string
+  price: number
+  is_available: boolean
+}
+
 // ── Update order status (kitchen display) ─────────────────────────────────────
 export async function updateOrderStatusAction(
   orderId: string,
@@ -49,18 +57,20 @@ export async function createWalkInOrderAction(input: {
   const serviceSupabase = createServiceClient()
   const productIds = input.items.map((i) => i.productId)
 
-  const { data: products } = await serviceSupabase
+  const { data: productsData } = await serviceSupabase
     .from('products')
     .select('id, name, price, is_available')
     .in('id', productIds)
     .eq('business_id', business.id)
+
+  const products = productsData as DbProduct[] | null
 
   if (!products || products.length !== productIds.length) {
     return { error: 'One or more products not found.' }
   }
 
   const lineItems = input.items.map((item) => {
-    const product = products.find((p) => p.id === item.productId)!
+    const product = products.find((p: DbProduct) => p.id === item.productId)!
     return {
       product_id: item.productId,
       product_name: product.name,
@@ -145,11 +155,13 @@ export async function placeOrderAction(input: PlaceOrderInput) {
   // 2. Fetch product prices from DB — never trust amounts from the client
   const productIds = input.items.map((i) => i.productId)
 
-  const { data: products } = await supabase
+  const { data: productsData2 } = await supabase
     .from('products')
     .select('id, name, price, is_available')
     .in('id', productIds)
     .eq('business_id', table.business_id)
+
+  const products = productsData2 as DbProduct[] | null
 
   if (!products || products.length !== productIds.length) {
     return { error: 'One or more items could not be found. Please refresh and try again.' }
@@ -166,7 +178,7 @@ export async function placeOrderAction(input: PlaceOrderInput) {
 
   // 3. Compute totals server-side
   const lineItems = input.items.map((item) => {
-    const product = products.find((p) => p.id === item.productId)!
+    const product = products.find((p: DbProduct) => p.id === item.productId)!
     return {
       product_id: item.productId,
       product_name: product.name,

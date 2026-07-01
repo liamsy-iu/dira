@@ -8,12 +8,13 @@ import styles from './page.module.css'
 
 interface Business {
   name: string
+  address: string | null
   phone: string | null
   email: string | null
   kra_pin: string | null
 }
 
-const initialState = { error: undefined as string | undefined, success: false }
+const initialState: { error: string | undefined; success: boolean } = { error: undefined, success: false }
 
 export function SettingsForm({ business }: { business: Business }) {
   const [state, formAction, isPending] = useActionState(

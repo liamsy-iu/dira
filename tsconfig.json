@@ -1,38 +1,57 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-
     /* Strict mode — non-negotiable */
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
     /* Module resolution */
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-
+    "jsx": "react-jsx",
     /* Output */
     "noEmit": true,
     "incremental": true,
-
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@/ui":        ["./components/ui/index"],
-      "@/types":     ["./lib/types/database.types"],
-      "@/supabase":  ["./lib/supabase"]
+      "@/*": [
+        "./*"
+      ],
+      "@/ui": [
+        "./components/ui/index"
+      ],
+      "@/types": [
+        "./lib/types/database.types"
+      ],
+      "@/supabase": [
+        "./lib/supabase"
+      ]
     },
-
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
