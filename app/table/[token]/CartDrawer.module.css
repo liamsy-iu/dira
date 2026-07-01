@@ -1,0 +1,208 @@
+/* CartDrawer.module.css */
+
+/* ── Backdrop ────────────────────────────── */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.48);
+  z-index: 30;
+}
+
+/* ── Drawer ──────────────────────────────── */
+
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: #ffffff;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Handle ──────────────────────────────── */
+
+.handle {
+  width: 36px;
+  height: 4px;
+  background-color: #e2ddd8;
+  border-radius: var(--radius-full);
+  margin: var(--space-3) auto var(--space-2);
+  flex-shrink: 0;
+}
+
+/* ── Header ──────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-5) var(--space-4);
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  letter-spacing: var(--tracking-tight);
+}
+
+.close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: #f0ede8;
+  color: #71717a;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.close:hover {
+  background-color: #e2ddd8;
+}
+
+/* ── Items ───────────────────────────────── */
+
+.items {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0 var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid #f0ede8;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-subtotal {
+  font-size: var(--text-xs);
+  color: #71717a;
+  font-family: var(--font-mono);
+}
+
+.item-qty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: #f0ede8;
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-2);
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #18181b;
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.qty-btn:hover {
+  background-color: #e2ddd8;
+}
+
+.qty-value {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  min-width: 16px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+/* ── Totals ──────────────────────────────── */
+
+.totals {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid #e2ddd8;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: #71717a;
+}
+
+.total-row span:last-child {
+  font-family: var(--font-mono);
+}
+
+.total-final {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  padding-top: var(--space-2);
+  border-top: 1px solid #e2ddd8;
+  margin-top: var(--space-1);
+}
+
+/* ── Error ───────────────────────────────── */
+
+.error {
+  margin: 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background-color: #fcebeb;
+  border: 1px solid #f09595;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: #a32d2d;
+  flex-shrink: 0;
+}
+
+/* ── Footer ──────────────────────────────── */
+
+.footer {
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  flex-shrink: 0;
+}

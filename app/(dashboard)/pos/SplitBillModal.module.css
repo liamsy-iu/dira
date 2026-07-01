@@ -1,0 +1,307 @@
+/* SplitBillModal.module.css */
+
+/* ── Configure phase ─────────────────────── */
+
+.configure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.error {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-red-dim);
+  border: 1px solid var(--color-red);
+  border-radius: var(--radius-md);
+  color: var(--color-red-text);
+  font-size: var(--text-sm);
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4);
+  background-color: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+}
+
+.total-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.total-amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+/* ── Split count selector ────────────────── */
+
+.selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.selector-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+}
+
+.selector-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2);
+}
+
+.ctrl-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+.ctrl-btn:hover:not(:disabled) {
+  background-color: var(--color-surface-3);
+}
+
+.ctrl-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ctrl-count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  min-width: 56px;
+  justify-content: center;
+  font-family: var(--font-mono);
+}
+
+/* ── Preview ─────────────────────────────── */
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+}
+
+.preview-row:last-child {
+  border-bottom: none;
+}
+
+.preview-label {
+  color: var(--color-text-muted);
+}
+
+.preview-amount {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.preview-note {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+  font-weight: var(--weight-regular);
+}
+
+/* ── Collecting phase ────────────────────── */
+
+.collecting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.splits {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.split:last-child {
+  border-bottom: none;
+}
+
+.split-paid {
+  opacity: 0.5;
+}
+
+.split-active {
+  background-color: var(--color-brand-dim);
+  border-color: var(--color-brand);
+}
+
+.split-pending {}
+
+.split-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.split-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-3);
+  flex-shrink: 0;
+}
+
+.split-paid .split-icon {
+  background-color: var(--color-brand);
+  color: #fff;
+}
+
+.split-active .split-icon {
+  background-color: var(--color-brand);
+  color: #fff;
+}
+
+.split-number {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.split-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.split-active .split-label {
+  color: var(--color-brand-text);
+  font-weight: var(--weight-medium);
+}
+
+.split-amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+/* ── Current payment ─────────────────────── */
+
+.current-payment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.current-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.current-amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  letter-spacing: var(--tracking-tight);
+}
+
+.remaining {
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+  text-align: center;
+}
+
+/* ── Complete phase ──────────────────────── */
+
+.complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  text-align: center;
+}
+
+.complete-icon {
+  width: 64px;
+  height: 64px;
+  background-color: var(--color-brand);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 0 0 8px var(--color-brand-dim);
+}
+
+.complete-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  letter-spacing: var(--tracking-tight);
+}
+
+.complete-ref {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-brand-text);
+}
+
+.complete-total {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}

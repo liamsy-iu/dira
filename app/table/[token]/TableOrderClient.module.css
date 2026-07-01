@@ -1,0 +1,115 @@
+/* TableOrderClient.module.css */
+
+.page {
+  min-height: 100dvh;
+  background-color: #f8f7f4;
+  color: #18181b;
+  font-family: var(--font-sans);
+  padding-bottom: 100px;
+}
+
+/* ── Header ──────────────────────────────── */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2ddd8;
+}
+
+.header-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.business-name {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  letter-spacing: var(--tracking-tight);
+}
+
+.table-label {
+  font-size: var(--text-xs);
+  color: #71717a;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  font-weight: var(--weight-medium);
+}
+
+/* ── Main content ────────────────────────── */
+
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ── Floating cart bar ───────────────────── */
+
+.cart-bar {
+  position: fixed;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - var(--space-8));
+  max-width: 560px;
+  z-index: 20;
+}
+
+.cart-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  background-color: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  box-shadow: 0 4px 24px rgba(22, 163, 74, 0.4);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.cart-btn:hover {
+  background-color: #15803d;
+}
+
+.cart-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  width: 18px;
+  height: 18px;
+  background-color: #ffffff;
+  color: #16a34a;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+}
+
+.cart-total {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  opacity: 0.9;
+}

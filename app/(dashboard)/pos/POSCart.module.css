@@ -1,0 +1,386 @@
+/* POSCart.module.css */
+
+/* ── Panel ───────────────────────────────── */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Items ───────────────────────────────── */
+
+.items {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.item:hover {
+  background-color: var(--color-surface-2);
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-price {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--color-surface-2);
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-2);
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.qty-btn:hover {
+  background-color: var(--color-surface-3);
+  color: var(--color-text);
+}
+
+.qty-val {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  min-width: 16px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+/* ── Totals ──────────────────────────────── */
+
+.totals {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.total-row span:last-child {
+  font-family: var(--font-mono);
+}
+
+.total-final {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-1);
+}
+
+/* ── Payment method ──────────────────────── */
+
+.payment {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.payment-label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.payment-btns {
+  display: flex;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.pay-btn {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.pay-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.pay-active {
+  background-color: var(--color-brand-dim);
+  border-color: var(--color-brand);
+  color: var(--color-brand-text);
+}
+
+/* ── Actions ─────────────────────────────── */
+
+.actions {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Success ─────────────────────────────── */
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-8);
+  text-align: center;
+  animation: fadeUp var(--duration-slow) var(--ease-default);
+}
+
+.success-icon {
+  color: var(--color-brand);
+}
+
+.success-title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.success-ref {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  color: var(--color-brand-text);
+}
+
+.success-total {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* ── Phone input ─────────────────────────── */
+
+.phone-wrap {
+  padding: 0 var(--space-5) var(--space-2);
+  flex-shrink: 0;
+}
+
+/* ── Empty ───────────────────────────────── */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.empty-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+.empty-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+}
+
+/* ── Waiting for M-Pesa ──────────────────── */
+
+.waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.waiting-icon {
+  color: var(--color-brand);
+  animation: spin var(--duration-slow) linear infinite;
+}
+
+.waiting-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.waiting-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  max-width: 220px;
+}
+
+.waiting-ref {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-brand-text);
+  margin-top: var(--space-2);
+}
+
+.waiting-amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+/* ── Failed ──────────────────────────────── */
+
+.failed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.failed-icon { color: var(--color-red); }
+
+.failed-title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.failed-reason {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  max-width: 220px;
+  margin-bottom: var(--space-4);
+}
+
+/* ── Secondary actions ───────────────────── */
+
+.secondary-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  justify-content: center;
+}
+
+.split-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: transparent;
+  border: none;
+  color: var(--color-brand-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.split-btn:hover {
+  background-color: var(--color-brand-dim);
+}
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.clear-btn:hover {
+  color: var(--color-text-muted);
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  align-items: center;
+}

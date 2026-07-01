@@ -1,0 +1,59 @@
+/* page.module.css — dashboard overview */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Header ──────────────────────────────── */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  letter-spacing: var(--tracking-tight);
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ── Stats grid ──────────────────────────── */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+/* Skeleton placeholder */
+.stat-skeleton {
+  height: 108px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Responsive ──────────────────────────── */
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+}

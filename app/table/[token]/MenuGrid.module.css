@@ -1,0 +1,214 @@
+/* MenuGrid.module.css */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Category tabs ───────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-bottom: 1px solid #e2ddd8;
+  background-color: #ffffff;
+  position: sticky;
+  top: 61px;
+  z-index: 9;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid #e2ddd8;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: #71717a;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+}
+
+.tab:hover {
+  background-color: #f0ede8;
+  color: #18181b;
+  border-color: #ccc8c2;
+}
+
+/* ── Section ─────────────────────────────── */
+
+.section {
+  padding: var(--space-6) var(--space-5) var(--space-4);
+  scroll-margin-top: 120px;
+}
+
+.section-title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #71717a;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+/* ── Grid ────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Product card ────────────────────────── */
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e2ddd8;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.card:hover {
+  border-color: #ccc8c2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.card-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+}
+
+.product-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  line-height: var(--leading-snug);
+}
+
+.product-desc {
+  font-size: var(--text-xs);
+  color: #71717a;
+  line-height: var(--leading-relaxed);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+}
+
+.product-price {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Add button */
+.add-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.add-btn:hover {
+  background-color: #15803d;
+  transform: scale(1.05);
+}
+
+.add-btn:active {
+  transform: scale(0.95);
+}
+
+/* Quantity controls (in-card) */
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: #f0ede8;
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-2);
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #18181b;
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.qty-btn:hover {
+  background-color: #e2ddd8;
+}
+
+.qty-value {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  min-width: 16px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+/* ── Empty ───────────────────────────────── */
+
+.empty {
+  padding: var(--space-16) var(--space-5);
+  text-align: center;
+}
+
+.empty-text {
+  font-size: var(--text-sm);
+  color: #71717a;
+}

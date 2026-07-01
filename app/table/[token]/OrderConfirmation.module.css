@@ -1,0 +1,112 @@
+/* OrderConfirmation.module.css */
+
+.page {
+  min-height: 100dvh;
+  background-color: #f8f7f4;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  font-family: var(--font-sans);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background-color: #ffffff;
+  border: 1px solid #e2ddd8;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-10) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  text-align: center;
+}
+
+/* ── Checkmark circle ────────────────────── */
+
+.check {
+  width: 72px;
+  height: 72px;
+  background-color: #16a34a;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 8px #dcfce7;
+  flex-shrink: 0;
+}
+
+/* ── Text ────────────────────────────────── */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  letter-spacing: var(--tracking-tight);
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: #71717a;
+  line-height: var(--leading-relaxed);
+}
+
+/* ── Details ─────────────────────────────── */
+
+.details {
+  width: 100%;
+  background-color: #f8f7f4;
+  border: 1px solid #e2ddd8;
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: #71717a;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  font-family: var(--font-mono);
+}
+
+/* ── Order more ──────────────────────────── */
+
+.order-more {
+  background: transparent;
+  border: none;
+  color: #16a34a;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.order-more:hover {
+  background-color: #f0fdf4;
+}

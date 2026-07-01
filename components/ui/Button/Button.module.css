@@ -1,0 +1,190 @@
+/* Button.module.css */
+
+.button {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  /* Typography */
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  line-height: 1;
+  white-space: nowrap;
+
+  /* Shape */
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  /* Motion */
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color     var(--duration-fast) var(--ease-out),
+    color            var(--duration-fast) var(--ease-out),
+    opacity          var(--duration-fast) var(--ease-out),
+    transform        var(--duration-fast) var(--ease-out),
+    box-shadow       var(--duration-fast) var(--ease-out);
+
+  /* Prevent text selection on rapid clicks */
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Sizes ───────────────────────────────── */
+
+.size-sm {
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+.size-md {
+  height: 40px;
+  padding: 0 var(--space-4);
+}
+
+.size-lg {
+  height: 48px;
+  padding: 0 var(--space-6);
+  font-size: var(--text-base);
+  border-radius: var(--radius-lg);
+}
+
+/* Large POS touch target — cashier-friendly */
+.size-xl {
+  height: 56px;
+  padding: 0 var(--space-8);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Variants ────────────────────────────── */
+
+/* Primary — the action you want them to take */
+.variant-primary {
+  background-color: var(--color-brand);
+  border-color: var(--color-brand);
+  color: #ffffff;
+}
+
+.variant-primary:hover:not(:disabled):not(.loading) {
+  background-color: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
+}
+
+.variant-primary:active:not(:disabled):not(.loading) {
+  transform: scale(0.98);
+}
+
+/* Secondary — important but not the primary CTA */
+.variant-secondary {
+  background-color: var(--color-surface-2);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.variant-secondary:hover:not(:disabled):not(.loading) {
+  background-color: var(--color-surface-3);
+  border-color: var(--color-border-strong);
+}
+
+.variant-secondary:active:not(:disabled):not(.loading) {
+  transform: scale(0.98);
+}
+
+/* Ghost — least visual weight */
+.variant-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.variant-ghost:hover:not(:disabled):not(.loading) {
+  background-color: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.variant-ghost:active:not(:disabled):not(.loading) {
+  transform: scale(0.98);
+}
+
+/* Danger — destructive actions */
+.variant-danger {
+  background-color: var(--color-red-dim);
+  border-color: var(--color-red);
+  color: var(--color-red-text);
+}
+
+.variant-danger:hover:not(:disabled):not(.loading) {
+  background-color: var(--color-red);
+  color: #ffffff;
+}
+
+.variant-danger:active:not(:disabled):not(.loading) {
+  transform: scale(0.98);
+}
+
+/* Outline */
+.variant-outline {
+  background-color: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.variant-outline:hover:not(:disabled):not(.loading) {
+  border-color: var(--color-brand);
+  color: var(--color-brand-text);
+}
+
+.variant-outline:active:not(:disabled):not(.loading) {
+  transform: scale(0.98);
+}
+
+/* ── States ──────────────────────────────── */
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading — show spinner, keep button dimensions */
+.loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.loading .label {
+  opacity: 0;
+}
+
+.spinner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin var(--duration-slow) linear infinite;
+}
+
+/* ── Width ───────────────────────────────── */
+
+.full-width {
+  width: 100%;
+}
+
+/* ── Icon-only ───────────────────────────── */
+
+.icon-only.size-sm { width: 32px; padding: 0; }
+.icon-only.size-md { width: 40px; padding: 0; }
+.icon-only.size-lg { width: 48px; padding: 0; }
+.icon-only.size-xl { width: 56px; padding: 0; }

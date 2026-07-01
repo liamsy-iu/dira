@@ -1,0 +1,123 @@
+/* Input.module.css */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.label.required::after {
+  content: ' *';
+  color: var(--color-red-text);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--space-4);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: 1;
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow   var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.input::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.input:hover:not(:disabled):not(.input-error) {
+  border-color: var(--color-border-strong);
+}
+
+.input:focus:not(:disabled) {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-dim);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Error state */
+.input-error {
+  border-color: var(--color-red);
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 3px var(--color-red-dim);
+}
+
+/* Size — lg for POS touch use */
+.size-lg .input {
+  height: 48px;
+  font-size: var(--text-base);
+  padding: 0 var(--space-5);
+}
+
+/* Mono — for amounts, order refs, codes */
+.mono .input {
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Icon slots */
+.has-prefix .input {
+  padding-left: var(--space-10);
+}
+
+.has-suffix .input {
+  padding-right: var(--space-10);
+}
+
+.prefix,
+.suffix {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-10);
+  color: var(--color-text-subtle);
+  pointer-events: none;
+}
+
+.prefix { left: 0; }
+.suffix { right: 0; }
+
+/* Error message */
+.error-message {
+  font-size: var(--text-xs);
+  color: var(--color-red-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Hint text */
+.hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+}

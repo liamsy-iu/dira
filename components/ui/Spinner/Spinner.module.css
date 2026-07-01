@@ -1,0 +1,29 @@
+/* Spinner.module.css */
+
+.spinner {
+  display: inline-block;
+  border-radius: var(--radius-full);
+  border-style: solid;
+  border-color: var(--color-border-strong);
+  border-top-color: var(--color-brand);
+  animation: spin var(--duration-slow) linear infinite;
+  flex-shrink: 0;
+}
+
+.size-sm { width: 16px; height: 16px; border-width: 1.5px; }
+.size-md { width: 24px; height: 24px; border-width: 2px; }
+.size-lg { width: 36px; height: 36px; border-width: 2.5px; }
+.size-xl { width: 48px; height: 48px; border-width: 3px; }
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.full-page {
+  min-height: 100dvh;
+}
