@@ -1,9 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useTransition } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
+import { updateOrderStatusAction } from '@/lib/actions/orders'
 import { KitchenCard } from './KitchenCard'
 import { ChefHat } from 'lucide-react'
+import type { OrderStatus } from '@/lib/types/database.types'
 import styles from './page.module.css'
 
 interface OrderItem {
@@ -16,7 +19,7 @@ interface OrderItem {
 interface KitchenOrder {
   id: string
   order_ref: string
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready'
+  status: OrderStatus
   created_at: string
   dining_tables: { label: string } | null
   order_items: OrderItem[]
@@ -28,6 +31,7 @@ export function KitchenClient({ businessId }: { businessId: string }) {
   const [orders, setOrders] = useState<KitchenOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [now, setNow] = useState(new Date())
+  const [, startTransition] = useTransition()
   const supabase = createClient()
 
   const loadOrders = useCallback(async () => {
@@ -46,51 +50,45 @@ export function KitchenClient({ businessId }: { businessId: string }) {
     setLoading(false)
   }, [businessId, supabase])
 
-  // Initial load
-  useEffect(() => {
-    loadOrders()
-  }, [loadOrders])
+  useEffect(() => { loadOrders() }, [loadOrders])
 
-  // Realtime subscription
   useEffect(() => {
     const channel = supabase
       .channel(`kitchen-${businessId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'orders',
-          filter: `business_id=eq.${businessId}`,
-        },
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders', filter: `business_id=eq.${businessId}` },
         () => loadOrders()
       )
       .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
+    return () => { supabase.removeChannel(channel) }
   }, [businessId, supabase, loadOrders])
 
-  // Update elapsed times every minute
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60000)
     return () => clearInterval(interval)
   }, [])
 
-  // Group by status
+  // ── Optimistic advance ─────────────────────────────────────────────────────
+  // Card moves INSTANTLY to new column. Server confirms in background.
+  // If server fails, card snaps back.
+  function handleAdvance(orderId: string, currentStatus: OrderStatus, nextStatus: OrderStatus) {
+    // 1. Optimistic update
+    setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status: nextStatus } : o))
+
+    startTransition(async () => {
+      const result = await updateOrderStatusAction(orderId, nextStatus)
+      if (result.error) {
+        // Revert on failure
+        setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status: currentStatus } : o))
+      }
+    })
+  }
+
   const pending   = orders.filter((o) => o.status === 'pending')
   const confirmed = orders.filter((o) => o.status === 'confirmed')
   const preparing = orders.filter((o) => o.status === 'preparing')
   const ready     = orders.filter((o) => o.status === 'ready')
 
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <span className={styles['loading-text']}>Loading orders…</span>
-      </div>
-    )
-  }
+  if (loading) return <div className={styles.loading}><span className={styles['loading-text']}>Loading orders…</span></div>
 
   if (orders.length === 0) {
     return (
@@ -102,67 +100,46 @@ export function KitchenClient({ businessId }: { businessId: string }) {
     )
   }
 
+  const columns = [
+    { key: 'pending',   label: 'New',      cls: styles['col-pending'],   orders: pending },
+    { key: 'confirmed', label: 'Accepted',  cls: styles['col-confirmed'], orders: confirmed },
+    { key: 'preparing', label: 'Preparing', cls: styles['col-preparing'], orders: preparing },
+    { key: 'ready',     label: 'Ready',     cls: styles['col-ready'],     orders: ready },
+  ]
+
   return (
     <div className={styles.board}>
-      {/* Column: New */}
-      <div className={styles.column}>
-        <div className={`${styles['col-header']} ${styles['col-pending']}`}>
-          <span>New</span>
-          {pending.length > 0 && (
-            <span className={styles['col-count']}>{pending.length}</span>
-          )}
+      {columns.map((col) => (
+        <div key={col.key} className={styles.column}>
+          <div className={`${styles['col-header']} ${col.cls}`}>
+            <span>{col.label}</span>
+            {col.orders.length > 0 && (
+              <span className={styles['col-count']}>{col.orders.length}</span>
+            )}
+          </div>
+          <div className={styles['col-cards']}>
+            {/* AnimatePresence + layout makes cards glide between columns */}
+            <AnimatePresence mode="popLayout">
+              {col.orders.map((order) => (
+                <motion.div
+                  key={order.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.92, y: -8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.92, y: 8 }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                >
+                  <KitchenCard
+                    order={order}
+                    now={now}
+                    onAdvance={handleAdvance}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
-        <div className={styles['col-cards']}>
-          {pending.map((order) => (
-            <KitchenCard key={order.id} order={order} now={now} />
-          ))}
-        </div>
-      </div>
-
-      {/* Column: Accepted */}
-      <div className={styles.column}>
-        <div className={`${styles['col-header']} ${styles['col-confirmed']}`}>
-          <span>Accepted</span>
-          {confirmed.length > 0 && (
-            <span className={styles['col-count']}>{confirmed.length}</span>
-          )}
-        </div>
-        <div className={styles['col-cards']}>
-          {confirmed.map((order) => (
-            <KitchenCard key={order.id} order={order} now={now} />
-          ))}
-        </div>
-      </div>
-
-      {/* Column: Preparing */}
-      <div className={styles.column}>
-        <div className={`${styles['col-header']} ${styles['col-preparing']}`}>
-          <span>Preparing</span>
-          {preparing.length > 0 && (
-            <span className={styles['col-count']}>{preparing.length}</span>
-          )}
-        </div>
-        <div className={styles['col-cards']}>
-          {preparing.map((order) => (
-            <KitchenCard key={order.id} order={order} now={now} />
-          ))}
-        </div>
-      </div>
-
-      {/* Column: Ready */}
-      <div className={styles.column}>
-        <div className={`${styles['col-header']} ${styles['col-ready']}`}>
-          <span>Ready</span>
-          {ready.length > 0 && (
-            <span className={styles['col-count']}>{ready.length}</span>
-          )}
-        </div>
-        <div className={styles['col-cards']}>
-          {ready.map((order) => (
-            <KitchenCard key={order.id} order={order} now={now} />
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   )
 }

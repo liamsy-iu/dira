@@ -4,10 +4,7 @@ import { useState, useEffect, useActionState } from 'react'
 import { Plus, UtensilsCrossed } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useDiraStore } from '@/lib/store/dira'
-import { createProductAction, updateProductAction } from '@/lib/actions/products'
 import { Button } from '@/components/ui/Button/Button'
-import { Modal } from '@/components/ui/Modal/Modal'
-import { Spinner } from '@/components/ui/Spinner/Spinner'
 import { ProductList } from './ProductList'
 import { ProductForm } from './ProductForm'
 import type { Product } from '@/lib/types/database.types'
@@ -50,20 +47,36 @@ export function MenuClient() {
   function handleClose() {
     setFormOpen(false)
     setEditingProduct(null)
-    // Refresh products after mutation
+    // Refresh local menu state + store (which updates POS in real time)
     if (businessId) {
       const supabase = createClient()
       supabase
         .from('products').select('*').eq('business_id', businessId)
         .order('category', { ascending: true }).order('sort_order', { ascending: true }).order('name', { ascending: true })
-        .then(({ data }) => { if (data) setProducts(data as Product[]) })
+        .then(({ data }) => {
+          if (data) setProducts(data as Product[])
+        })
+      // Also update the Zustand store so POS reflects changes immediately
+      useDiraStore.getState().refreshProducts()
     }
   }
 
+  const storeProducts = useDiraStore((s) => s.products)
+
   if (loading) {
+    // Content-aware skeleton — show same number of rows as last known product count
+    const skeletonCount = storeProducts.length > 0 ? storeProducts.length : 6
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-16)' }}>
-        <Spinner size="lg" />
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
+          <div style={{ width: 120, height: 32, background: 'var(--color-surface-2)', borderRadius: 'var(--radius-md)', animation: 'pulse 1.4s ease-in-out infinite' }} />
+          <div style={{ width: 120, height: 40, background: 'var(--color-surface-2)', borderRadius: 'var(--radius-md)', animation: 'pulse 1.4s ease-in-out infinite' }} />
+        </div>
+        <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+          {Array.from({ length: skeletonCount }).map((_, i) => (
+            <div key={i} style={{ height: 56, borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)', margin: '2px 0', animation: 'pulse 1.4s ease-in-out infinite', animationDelay: `${i * 0.05}s` }} />
+          ))}
+        </div>
       </div>
     )
   }
