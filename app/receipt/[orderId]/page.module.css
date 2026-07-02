@@ -86,7 +86,7 @@
 
 .item-row {
   display: grid;
-  grid-template-columns: 1fr 30px 90px 90px;
+  grid-template-columns: 1fr 30px 90px 80px;
   gap: var(--space-2);
   font-size: var(--text-xs);
   align-items: baseline;
@@ -234,13 +234,6 @@
   @page {
     margin: 1cm;
     size: A4;
-  }
-
-  /* Force white everywhere — overrides dark theme on html/body */
-  html,
-  body {
-    background: #ffffff !important;
-    color: #1a1a1a !important;
   }
 
   .page {

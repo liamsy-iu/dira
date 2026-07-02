@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from 'react'
 import { Sun, Moon } from 'lucide-react'
+import { useDiraStore } from '@/lib/store/dira'
 import styles from './Topbar.module.css'
 
 interface TopbarProps {
   title: string
-  businessName?: string
 }
 
-export function Topbar({ title, businessName }: TopbarProps) {
+export function Topbar({ title }: TopbarProps) {
+  const businessName = useDiraStore((s) => s.businessName)
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
 
-  // Sync with the theme already set by the layout init script
   useEffect(() => {
     const current = document.documentElement.getAttribute('data-theme')
     if (current === 'light') setTheme('light')
@@ -22,9 +22,7 @@ export function Topbar({ title, businessName }: TopbarProps) {
     const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
     document.documentElement.setAttribute('data-theme', next)
-    try {
-      localStorage.setItem('dira-theme', next)
-    } catch {}
+    try { localStorage.setItem('dira-theme', next) } catch {}
   }
 
   return (
@@ -32,7 +30,6 @@ export function Topbar({ title, businessName }: TopbarProps) {
       <div className={styles.left}>
         <span className={styles['page-title']}>{title}</span>
       </div>
-
       <div className={styles.right}>
         {businessName && (
           <div className={styles['business-pill']}>
@@ -40,7 +37,6 @@ export function Topbar({ title, businessName }: TopbarProps) {
             {businessName}
           </div>
         )}
-
         <button
           className={styles['icon-btn']}
           onClick={toggleTheme}

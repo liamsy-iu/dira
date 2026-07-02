@@ -158,3 +158,15 @@ a:hover {
     transform: scale(1);
   }
 }
+
+/* ── Receipt print — global override ─────────────────────────────────────────
+   Forces white background when printing receipts, overriding dark theme.
+   Must live in globals.css — CSS Modules cannot target html/body directly.
+   ─────────────────────────────────────────────────────────────────────────── */
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+  }
+}
