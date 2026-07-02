@@ -3,24 +3,34 @@ import { createClient } from '@/lib/supabase/server'
 import { StatCard } from '@/components/ui/Card/Card'
 import styles from './page.module.css'
 
-// ── Stat cards (server-rendered) ─────────────
 async function DashboardStats() {
   const supabase = await createClient()
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const { data: orders } = await supabase
-    .from('orders')
-    .select('total, status, payment_status')
-    .gte('created_at', today.toISOString())
+  // Run all queries in parallel — eliminates sequential waterfall
+  const [ordersResult, tablesResult] = await Promise.all([
+    supabase
+      .from('orders')
+      .select('total, status, payment_status')
+      .gte('created_at', today.toISOString()),
+    supabase
+      .from('dining_tables')
+      .select('status'),
+  ])
+
+  const orders = ordersResult.data ?? []
+  const tables = tablesResult.data ?? []
 
   const totalRevenue = orders
-    ?.filter((o) => o.payment_status === 'completed')
-    .reduce((sum, o) => sum + (o.total ?? 0), 0) ?? 0
+    .filter((o) => o.payment_status === 'completed')
+    .reduce((sum, o) => sum + (o.total ?? 0), 0)
 
-  const orderCount = orders?.length ?? 0
-  const pendingCount = orders?.filter((o) => o.status === 'pending').length ?? 0
+  const orderCount   = orders.length
+  const pendingCount = orders.filter((o) => o.status === 'pending').length
+  const occupiedCount = tables.filter((t) => t.status === 'occupied').length
+  const tableCount   = tables.length
 
   const formatKES = (amount: number) =>
     `KES ${(amount / 100).toLocaleString('en-KE', { minimumFractionDigits: 2 })}`
@@ -39,19 +49,18 @@ async function DashboardStats() {
       />
       <StatCard
         label="Avg order value"
-        value={orderCount > 0 ? formatKES(totalRevenue / orderCount) : 'KES 0'}
+        value={orderCount > 0 ? formatKES(Math.round(totalRevenue / orderCount)) : 'KES 0.00'}
         sub="Today"
       />
       <StatCard
         label="Active tables"
-        value="—"
-        sub="Coming in Phase 4"
+        value={tableCount > 0 ? `${occupiedCount} / ${tableCount}` : '—'}
+        sub={tableCount > 0 ? 'Occupied / total' : 'No tables added yet'}
       />
     </div>
   )
 }
 
-// ── Skeleton while stats load ─────────────────
 function StatsSkeleton() {
   return (
     <div className={styles['stats-grid']}>
@@ -62,7 +71,6 @@ function StatsSkeleton() {
   )
 }
 
-// ── Page ──────────────────────────────────────
 export default function DashboardPage() {
   return (
     <div className={styles.page}>
@@ -77,7 +85,6 @@ export default function DashboardPage() {
           })}
         </p>
       </div>
-
       <Suspense fallback={<StatsSkeleton />}>
         <DashboardStats />
       </Suspense>
