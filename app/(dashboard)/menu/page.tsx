@@ -1,20 +1,42 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { getBusinessByOwner, getAllProducts } from '@/lib/data/queries'
+'use client'
+
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useDiraStore } from '@/lib/store/dira'
 import { MenuClient } from './MenuClient'
+import { Spinner } from '@/components/ui/Spinner/Spinner'
 import type { Product } from '@/lib/types/database.types'
 
-export const metadata = { title: 'Menu' }
+export default function MenuPage() {
+  const businessId = useDiraStore((s) => s.businessId)
+  const initialized = useDiraStore((s) => s.initialized)
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
 
-export default async function MenuPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  useEffect(() => {
+    if (!businessId) return
+    // Menu needs ALL products (including unavailable) for management
+    const supabase = createClient()
+    supabase
+      .from('products')
+      .select('*')
+      .eq('business_id', businessId)
+      .order('category', { ascending: true })
+      .order('sort_order', { ascending: true })
+      .order('name', { ascending: true })
+      .then(({ data }) => {
+        setProducts((data as Product[]) ?? [])
+        setLoading(false)
+      })
+  }, [businessId])
 
-  const business = await getBusinessByOwner(user.id)
-  if (!business) redirect('/login')
+  if (!initialized || loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-16)' }}>
+        <Spinner size="lg" />
+      </div>
+    )
+  }
 
-  const products = await getAllProducts(business.id)
-
-  return <MenuClient products={(products as Product[]) ?? []} />
+  return <MenuClient products={products} />
 }

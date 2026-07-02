@@ -1,22 +1,24 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+'use client'
+
+import { useDiraStore } from '@/lib/store/dira'
 import { SettingsForm } from './SettingsForm'
+import { Spinner } from '@/components/ui/Spinner/Spinner'
 import styles from './page.module.css'
 
-export const metadata = { title: 'Settings' }
+export default function SettingsPage() {
+  const business = useDiraStore((s) => s.business)
+  const initialized = useDiraStore((s) => s.initialized)
 
-export default async function SettingsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  // Business data already in store — instant render
+  if (!initialized) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-16)' }}>
+        <Spinner size="lg" />
+      </div>
+    )
+  }
 
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('name, address, phone, email, kra_pin')
-    .eq('owner_id', user.id)
-    .single()
-
-  if (!business) redirect('/login')
+  if (!business) return null
 
   return (
     <div className={styles.page}>
