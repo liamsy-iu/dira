@@ -1,0 +1,71 @@
+/* POSShell.module.css */
+
+.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100dvh - 56px);
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  height: calc(100dvh - 56px);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.retry-btn {
+  padding: var(--space-2) var(--space-5);
+  background-color: var(--color-brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+/* Refresh button — floats above the POS layout */
+.refresh-btn {
+  position: fixed;
+  bottom: var(--space-6);
+  left: calc(220px + var(--space-4));
+  z-index: var(--z-raised);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.refresh-btn:hover {
+  background-color: var(--color-surface-3);
+  color: var(--color-text);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinning svg {
+  animation: spin var(--duration-slow) linear infinite;
+}
