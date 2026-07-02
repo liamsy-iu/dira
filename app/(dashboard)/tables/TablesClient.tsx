@@ -3,29 +3,20 @@
 import { useState, useEffect, useActionState } from 'react'
 import { Plus, Table2 } from 'lucide-react'
 import { createTableAction } from '@/lib/actions/tables'
+import { useDiraStore } from '@/lib/store/dira'
 import { Button } from '@/components/ui/Button/Button'
 import { Input } from '@/components/ui/Input/Input'
 import { Modal } from '@/components/ui/Modal/Modal'
 import { TableCard } from './TableCard'
 import styles from './page.module.css'
 
-interface DiningTable {
-  id: string
-  label: string
-  status: string
-  qr_token: string
-}
-
-interface TablesClientProps {
-  tables: DiningTable[]
-  baseUrl: string
-}
-
 const initialState: { error: string | undefined; success: boolean } = { error: undefined, success: false }
 
-export function TablesClient({ tables, baseUrl }: TablesClientProps) {
+export function TablesClient() {
+  const tables = useDiraStore((s) => s.tables)
   const [modalOpen, setModalOpen] = useState(false)
   const [state, formAction, isPending] = useActionState(createTableAction, initialState)
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
 
   useEffect(() => {
     if (state?.success) setModalOpen(false)

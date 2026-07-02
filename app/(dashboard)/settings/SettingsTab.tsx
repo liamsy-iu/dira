@@ -5,11 +5,10 @@ import { SettingsForm } from './SettingsForm'
 import { Spinner } from '@/components/ui/Spinner/Spinner'
 import styles from './page.module.css'
 
-export default function SettingsPage() {
-  const business = useDiraStore((s) => s.business)
+export function SettingsTab() {
+  const business    = useDiraStore((s) => s.business)
   const initialized = useDiraStore((s) => s.initialized)
 
-  // Business data already in store — instant render
   if (!initialized) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-16)' }}>

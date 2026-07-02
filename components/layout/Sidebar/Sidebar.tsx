@@ -1,69 +1,35 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import {
-  Compass,
-  LayoutDashboard,
-  ShoppingCart,
-  ChefHat,
-  UtensilsCrossed,
-  Table2,
-  BarChart3,
-  Settings,
-  LogOut,
+  Compass, LayoutDashboard, ShoppingCart, ChefHat,
+  UtensilsCrossed, Table2, BarChart3, Settings, LogOut,
 } from 'lucide-react'
 import { logoutAction } from '@/lib/actions/auth'
+import type { DashboardTab } from '@/lib/types/dashboard'
 import styles from './Sidebar.module.css'
 
 interface NavItem {
+  tab: DashboardTab
   label: string
-  href: string
   icon: React.ReactNode
-  badge?: number
 }
 
 const primaryNav: NavItem[] = [
-  {
-    label: 'Overview',
-    href: '/',
-    icon: <LayoutDashboard size={18} strokeWidth={1.5} />,
-  },
-  {
-    label: 'POS',
-    href: '/pos',
-    icon: <ShoppingCart size={18} strokeWidth={1.5} />,
-  },
-  {
-    label: 'Kitchen',
-    href: '/kitchen',
-    icon: <ChefHat size={18} strokeWidth={1.5} />,
-  },
-  {
-    label: 'Menu',
-    href: '/menu',
-    icon: <UtensilsCrossed size={18} strokeWidth={1.5} />,
-  },
-  {
-    label: 'Tables',
-    href: '/tables',
-    icon: <Table2 size={18} strokeWidth={1.5} />,
-  },
-  {
-    label: 'Reports',
-    href: '/reports',
-    icon: <BarChart3 size={18} strokeWidth={1.5} />,
-  },
+  { tab: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} strokeWidth={1.5} /> },
+  { tab: 'pos',      label: 'POS',      icon: <ShoppingCart size={18} strokeWidth={1.5} /> },
+  { tab: 'kitchen',  label: 'Kitchen',  icon: <ChefHat size={18} strokeWidth={1.5} /> },
+  { tab: 'menu',     label: 'Menu',     icon: <UtensilsCrossed size={18} strokeWidth={1.5} /> },
+  { tab: 'tables',   label: 'Tables',   icon: <Table2 size={18} strokeWidth={1.5} /> },
+  { tab: 'reports',  label: 'Reports',  icon: <BarChart3 size={18} strokeWidth={1.5} /> },
 ]
 
-export function Sidebar({ pendingOrders = 0 }: { pendingOrders?: number }) {
-  const pathname = usePathname()
+interface SidebarProps {
+  activeTab: DashboardTab
+  onTabChange: (tab: DashboardTab) => void
+  pendingOrders?: number
+}
 
-  const isActive = (href: string) => {
-    if (href === '/') return pathname === '/'
-    return pathname.startsWith(href)
-  }
-
+export function Sidebar({ activeTab, onTabChange, pendingOrders = 0 }: SidebarProps) {
   return (
     <aside className={styles.sidebar}>
       {/* Brand */}
@@ -78,51 +44,41 @@ export function Sidebar({ pendingOrders = 0 }: { pendingOrders?: number }) {
       <nav className={styles.nav} aria-label="Main navigation">
         <div className={styles['nav-section']}>
           {primaryNav.map((item) => {
-            const badge =
-              item.href === '/kitchen' && pendingOrders > 0
-                ? pendingOrders
-                : undefined
+            const isActive = activeTab === item.tab
+            const badge = item.tab === 'kitchen' && pendingOrders > 0 ? pendingOrders : undefined
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`${styles['nav-item']} ${
-                  isActive(item.href) ? styles.active : ''
-                }`}
-                aria-current={isActive(item.href) ? 'page' : undefined}
+              <button
+                key={item.tab}
+                className={`${styles['nav-item']} ${isActive ? styles.active : ''}`}
+                onClick={() => onTabChange(item.tab)}
+                aria-current={isActive ? 'page' : undefined}
               >
                 <span className={styles['nav-item-icon']}>{item.icon}</span>
                 {item.label}
                 {badge !== undefined && (
                   <span className={styles['nav-badge']}>{badge}</span>
                 )}
-              </Link>
+              </button>
             )
           })}
         </div>
       </nav>
 
-      {/* Bottom — settings + logout */}
+      {/* Bottom */}
       <div className={styles.bottom}>
-        <Link
-          href="/settings"
-          className={`${styles['nav-item']} ${
-            isActive('/settings') ? styles.active : ''
-          }`}
-          aria-current={isActive('/settings') ? 'page' : undefined}
+        <button
+          className={`${styles['nav-item']} ${activeTab === 'settings' ? styles.active : ''}`}
+          onClick={() => onTabChange('settings')}
+          aria-current={activeTab === 'settings' ? 'page' : undefined}
         >
-          <span className={styles['nav-item-icon']}>
-            <Settings size={18} strokeWidth={1.5} />
-          </span>
+          <span className={styles['nav-item-icon']}><Settings size={18} strokeWidth={1.5} /></span>
           Settings
-        </Link>
+        </button>
 
         <form action={logoutAction}>
           <button type="submit" className={styles['nav-item']}>
-            <span className={styles['nav-item-icon']}>
-              <LogOut size={18} strokeWidth={1.5} />
-            </span>
+            <span className={styles['nav-item-icon']}><LogOut size={18} strokeWidth={1.5} /></span>
             Sign out
           </button>
         </form>
