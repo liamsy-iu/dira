@@ -59,6 +59,30 @@ function writeCache(businessId: string, products: Product[], tables: DiningTable
   } catch {}
 }
 
+// ── Realtime subscriptions ────────────────────────────────────────────────────
+
+function subscribeRealtime(businessId: string) {
+  const supabase = createClient()
+  const existing = supabase.getChannels().find(c => c.topic === 'store-products')
+  if (existing) return
+
+  supabase
+    .channel('store-products')
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'products',
+      filter: `business_id=eq.${businessId}`,
+    }, () => useDiraStore.getState().refreshProducts())
+    .subscribe()
+
+  supabase
+    .channel('store-tables')
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'dining_tables',
+      filter: `business_id=eq.${businessId}`,
+    }, () => useDiraStore.getState().refreshTables())
+    .subscribe()
+}
+
 // ── Data loader (module-level so it's not part of the store type) ─────────────
 
 async function loadData(
@@ -136,17 +160,44 @@ export const useDiraStore = create<DiraStore>((set, get) => ({
     if (get().initialized) return
 
     const supabase = createClient()
-
-    // getSession() reads localStorage — ZERO network round trip
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
-    // business_id baked into JWT by trigger — ZERO network round trip
     const businessId   = session.user.app_metadata?.business_id   as string | undefined
     const businessName = session.user.app_metadata?.business_name as string | undefined
 
+    // Check localStorage cache first — show instantly, refresh in background
+    if (businessId) {
+      const cached = readCache(businessId)
+      if (cached) {
+        set({ businessId, businessName: businessName ?? '', products: cached.products, tables: cached.tables, initialized: true })
+        get().refresh()
+        return
+      }
+    }
+
+    // Try the prefetch that was fired before React booted
+    // If it's ready, we get data with zero additional network wait
+    try {
+      const prefetched = await (window as any).__dira_prefetch
+      if (prefetched?.business && prefetched?.products) {
+        const bid = prefetched.business.id as string
+        writeCache(bid, prefetched.products, prefetched.tables ?? [])
+        set({
+          businessId:   bid,
+          businessName: prefetched.business.name as string,
+          business:     prefetched.business,
+          products:     prefetched.products,
+          tables:       prefetched.tables ?? [],
+          initialized:  true,
+        })
+        subscribeRealtime(bid)
+        return
+      }
+    } catch {}
+
+    // Fallback: standard Supabase fetch
     if (!businessId) {
-      // Fallback: accounts created before the JWT migration
       const { data: business } = await supabase
         .from('businesses')
         .select('id, name, phone, email, kra_pin, address')
@@ -158,15 +209,6 @@ export const useDiraStore = create<DiraStore>((set, get) => ({
       return
     }
 
-    // Check localStorage — show instantly then refresh silently
-    const cached = readCache(businessId)
-    if (cached) {
-      set({ businessId, businessName: businessName ?? '', products: cached.products, tables: cached.tables, initialized: true })
-      get().refresh()
-      return
-    }
-
-    // Cache miss — ONE parallel round trip for products + tables
     const result = await loadData(businessId, businessName ?? '')
     set({ businessId, businessName: businessName ?? '', ...result, initialized: true })
   },
