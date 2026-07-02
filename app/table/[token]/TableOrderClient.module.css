@@ -113,3 +113,105 @@
   font-size: var(--text-sm);
   opacity: 0.9;
 }
+
+/* ── M-Pesa screens ──────────────────────── */
+
+.mpesa-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  background-color: #f8f7f4;
+}
+
+.mpesa-spinner {
+  color: #16a34a;
+  animation: spin var(--duration-slow) linear infinite;
+  flex-shrink: 0;
+}
+
+.mpesa-error-icon {
+  color: #dc2626;
+  flex-shrink: 0;
+}
+
+.mpesa-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  color: #18181b;
+  letter-spacing: var(--tracking-tight);
+}
+
+.mpesa-sub {
+  font-size: var(--text-base);
+  color: #71717a;
+  line-height: var(--leading-relaxed);
+  max-width: 300px;
+}
+
+.mpesa-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-6);
+  background-color: #ffffff;
+  border: 1px solid #e2ddd8;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: #18181b;
+  font-weight: var(--weight-medium);
+  min-width: 200px;
+}
+
+.mpesa-hint {
+  font-size: var(--text-xs);
+  color: #a1a1aa;
+  max-width: 260px;
+}
+
+.mpesa-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 320px;
+}
+
+.mpesa-retry {
+  width: 100%;
+  padding: var(--space-4);
+  background-color: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.mpesa-retry:hover { background-color: #15803d; }
+
+.mpesa-cash {
+  width: 100%;
+  padding: var(--space-3);
+  background: transparent;
+  color: #71717a;
+  border: 1px solid #e2ddd8;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.mpesa-cash:hover {
+  border-color: #ccc8c2;
+  color: #18181b;
+}

@@ -232,5 +232,5 @@ export async function placeOrderAction(input: PlaceOrderInput) {
     .update({ status: 'occupied' })
     .eq('id', table.id)
 
-  return { orderRef, total, tableLabel: table.label }
+  return { orderId: order.id as string, orderRef, total, tableLabel: table.label }
 }
