@@ -41,6 +41,7 @@ export async function createProductAction(
     description: description || null,
     price: kesToCents(price),
     category: category || null,
+    image_url: (formData.get('image_url') as string)?.trim() || null,
     stock_count: stockStr ? parseInt(stockStr) : null,
     is_available: true,
     sort_order: 0,
@@ -80,6 +81,7 @@ export async function updateProductAction(
       description: description || null,
       price: kesToCents(price),
       category: category || null,
+      image_url: (formData.get('image_url') as string)?.trim() || null,
       stock_count: stockStr ? parseInt(stockStr) : null,
       updated_at: new Date().toISOString(),
     })
