@@ -302,7 +302,15 @@ export function TableOrderClient({
             <button className={styles['cart-btn']} onClick={() => setCartOpen(true)}>
               <span className={styles['cart-badge']}>
                 <ShoppingBag size={18} strokeWidth={1.5} />
-                <span className={styles['cart-count']}>{cartCount}</span>
+                <motion.span
+                  key={cartCount}
+                  className={styles['cart-count']}
+                  initial={{ scale: 1.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', damping: 12, stiffness: 400 }}
+                >
+                  {cartCount}
+                </motion.span>
               </span>
               <span>View order</span>
               <span className={styles['cart-total']}>{formatKES(totalWithTax)}</span>

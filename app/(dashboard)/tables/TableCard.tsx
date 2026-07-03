@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { Copy, Trash2, Check, QrCode } from 'lucide-react'
 import { deleteTableAction } from '@/lib/actions/tables'
@@ -59,9 +60,15 @@ export function TableCard({ id, label, status, qrToken, baseUrl }: TableCardProp
       <div className={styles.header}>
         <div>
           <h3 className={styles.label}>{label}</h3>
-          <span className={`${styles.status} ${statusVariant}`}>
+          <motion.span
+            key={status}
+            className={`${styles.status} ${statusVariant}`}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', damping: 15, stiffness: 300 }}
+          >
             {status}
-          </span>
+          </motion.span>
         </div>
         <button
           className={styles['delete-btn']}

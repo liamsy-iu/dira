@@ -1,6 +1,7 @@
 'use client'
 
 import { useOptimistic, useTransition, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Pencil, Trash2, Package } from 'lucide-react'
 import {
   toggleAvailabilityAction,
@@ -118,58 +119,42 @@ export function ProductList({ products, onEdit }: ProductListProps) {
       {Object.entries(grouped).map(([category, items]) => (
         <div key={category} className={styles.group}>
           <div className={styles['group-label']}>{category}</div>
-          {items.map((product) => (
-            <div key={product.id} className={styles.row}>
-              <div className={styles['col-name']}>
-                <span className={styles.name}>{product.name}</span>
-                {product.description && (
-                  <span className={styles.description}>
-                    {product.description}
-                  </span>
-                )}
-              </div>
-
-              <div className={styles['col-category']}>
-                {product.category && (
-                  <Badge variant="default">{product.category}</Badge>
-                )}
-              </div>
-
-              <div className={styles['col-price']}>
-                <span className={styles.price}>
-                  {formatKES(product.price)}
-                </span>
-              </div>
-
-              <div className={styles['col-available']}>
-                <AvailabilityToggle
-                  id={product.id}
-                  isAvailable={product.is_available}
-                  onToggle={handleToggle}
-                />
-              </div>
-
-              <div className={styles['col-actions']}>
-                <button
-                  className={styles['action-btn']}
-                  onClick={() => onEdit(product)}
-                  aria-label={`Edit ${product.name}`}
-                  type="button"
-                >
-                  <Pencil size={15} strokeWidth={1.5} />
-                </button>
-                <button
-                  className={`${styles['action-btn']} ${styles['action-danger']}`}
-                  onClick={() => handleDelete(product.id)}
-                  aria-label={`Delete ${product.name}`}
-                  disabled={deletingId === product.id}
-                  type="button"
-                >
-                  <Trash2 size={15} strokeWidth={1.5} />
-                </button>
-              </div>
-            </div>
-          ))}
+          <AnimatePresence initial={false}>
+            {items.map((product) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.16, ease: 'easeOut' }}
+                className={styles.row}
+              >
+                <div className={styles['col-name']}>
+                  <span className={styles.name}>{product.name}</span>
+                  {product.description && (
+                    <span className={styles.description}>{product.description}</span>
+                  )}
+                </div>
+                <div className={styles['col-category']}>
+                  {product.category && <Badge variant="default">{product.category}</Badge>}
+                </div>
+                <div className={styles['col-price']}>
+                  <span className={styles.price}>{formatKES(product.price)}</span>
+                </div>
+                <div className={styles['col-available']}>
+                  <AvailabilityToggle id={product.id} isAvailable={product.is_available} onToggle={handleToggle} />
+                </div>
+                <div className={styles['col-actions']}>
+                  <button className={styles['action-btn']} onClick={() => onEdit(product)} aria-label={`Edit ${product.name}`} type="button">
+                    <Pencil size={15} strokeWidth={1.5} />
+                  </button>
+                  <button className={`${styles['action-btn']} ${styles['action-danger']}`} onClick={() => handleDelete(product.id)} aria-label={`Delete ${product.name}`} disabled={deletingId === product.id} type="button">
+                    <Trash2 size={15} strokeWidth={1.5} />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       ))}
     </div>

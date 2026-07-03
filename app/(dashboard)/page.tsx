@@ -34,15 +34,16 @@ export default function DashboardPage() {
       <div className={styles.main}>
         <Topbar title="Dira" />
         <main className={styles.content} id="main-content">
-          <Suspense fallback={<TabSpinner />}>
-            {activeTab === 'overview'  && <Overview />}
-            {activeTab === 'pos'       && <POSTab />}
-            {activeTab === 'kitchen'   && <KitchenTab />}
-            {activeTab === 'menu'      && <MenuTab />}
-            {activeTab === 'tables'    && <TablesTab />}
-            {activeTab === 'reports'   && <ReportsTab />}
-            {activeTab === 'settings'  && <SettingsTab />}
-          </Suspense>
+        <Suspense fallback={<TabSpinner />}>
+          <div style={{ display: activeTab === 'overview'  ? 'block' : 'none' }}><Overview /></div>
+          <div style={{ display: activeTab === 'pos'       ? 'block' : 'none' }}><POSTab /></div>
+          {/* Kitchen stays mounted always — keeps Realtime alive, no missed orders */}
+          <div style={{ display: activeTab === 'kitchen'   ? 'block' : 'none' }}><KitchenTab /></div>
+          <div style={{ display: activeTab === 'menu'      ? 'block' : 'none' }}><MenuTab /></div>
+          <div style={{ display: activeTab === 'tables'    ? 'block' : 'none' }}><TablesTab /></div>
+          <div style={{ display: activeTab === 'reports'   ? 'block' : 'none' }}><ReportsTab /></div>
+          <div style={{ display: activeTab === 'settings'  ? 'block' : 'none' }}><SettingsTab /></div>
+        </Suspense>
         </main>
       </div>
     </div>
