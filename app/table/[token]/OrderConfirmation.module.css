@@ -1,8 +1,8 @@
-/* OrderConfirmation.module.css */
+/* OrderConfirmation.module.css — redesigned */
 
 .page {
   min-height: 100dvh;
-  background-color: #f8f7f4;
+  background-color: #f5f3f0;
   display: grid;
   place-items: center;
   padding: var(--space-6);
@@ -13,27 +13,28 @@
   width: 100%;
   max-width: 380px;
   background-color: #ffffff;
-  border: 1px solid #e2ddd8;
-  border-radius: var(--radius-2xl);
+  border: 1px solid #ede9e4;
+  border-radius: 24px;
   padding: var(--space-10) var(--space-8);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-6);
   text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
-/* ── Checkmark circle ────────────────────── */
+/* ── Checkmark ───────────────────────────── */
 
 .check {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   background-color: #16a34a;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 8px #dcfce7;
+  box-shadow: 0 0 0 12px #dcfce7;
   flex-shrink: 0;
 }
 
@@ -46,15 +47,15 @@
 }
 
 .title {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
   font-weight: var(--weight-medium);
-  color: #18181b;
-  letter-spacing: var(--tracking-tight);
+  color: #1a1a1a;
+  letter-spacing: -0.03em;
 }
 
 .subtitle {
   font-size: var(--text-sm);
-  color: #71717a;
+  color: #9e9089;
   line-height: var(--leading-relaxed);
 }
 
@@ -62,9 +63,9 @@
 
 .details {
   width: 100%;
-  background-color: #f8f7f4;
-  border: 1px solid #e2ddd8;
-  border-radius: var(--radius-lg);
+  background-color: #f9f7f5;
+  border: 1px solid #ede9e4;
+  border-radius: var(--radius-xl);
   padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
@@ -80,19 +81,19 @@
 .detail-label {
   font-size: var(--text-xs);
   font-weight: var(--weight-medium);
-  color: #71717a;
-  letter-spacing: var(--tracking-wide);
+  color: #a09890;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .detail-value {
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
-  color: #18181b;
+  color: #1a1a1a;
   font-family: var(--font-mono);
 }
 
-/* ── Order more ──────────────────────────── */
+/* ── Add more ────────────────────────────── */
 
 .order-more {
   background: transparent;
@@ -103,10 +104,8 @@
   font-weight: var(--weight-medium);
   cursor: pointer;
   padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  border-radius: var(--radius-lg);
+  transition: background-color 150ms ease;
 }
 
-.order-more:hover {
-  background-color: #f0fdf4;
-}
+.order-more:hover { background-color: #f0fdf4; }

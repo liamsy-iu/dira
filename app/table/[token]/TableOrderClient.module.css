@@ -1,21 +1,21 @@
-/* TableOrderClient.module.css */
+/* TableOrderClient.module.css — redesigned */
 
 .page {
   min-height: 100dvh;
-  background-color: #f8f7f4;
-  color: #18181b;
+  background-color: #f5f3f0;
+  color: #1a1a1a;
   font-family: var(--font-sans);
-  padding-bottom: 100px;
+  padding-bottom: 120px;
 }
 
 /* ── Header ──────────────────────────────── */
 
 .header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #ede9e4;
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e2ddd8;
 }
 
 .header-inner {
@@ -27,23 +27,29 @@
   justify-content: space-between;
 }
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .business-name {
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   font-weight: var(--weight-medium);
-  color: #18181b;
-  letter-spacing: var(--tracking-tight);
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 .table-label {
-  font-size: var(--text-xs);
-  color: #71717a;
-  margin-top: 2px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
+  font-size: 11px;
   font-weight: var(--weight-medium);
+  color: #16a34a;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-/* ── Main content ────────────────────────── */
+/* ── Main ────────────────────────────────── */
 
 .main {
   max-width: 640px;
@@ -60,6 +66,7 @@
   width: calc(100% - var(--space-8));
   max-width: 560px;
   z-index: 20;
+  filter: drop-shadow(0 8px 24px rgba(22, 163, 74, 0.35));
 }
 
 .cart-btn {
@@ -71,18 +78,16 @@
   background-color: #16a34a;
   color: #ffffff;
   border: none;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: var(--text-base);
   font-weight: var(--weight-medium);
-  box-shadow: 0 4px 24px rgba(22, 163, 74, 0.4);
   transition: background-color var(--duration-fast) var(--ease-out);
 }
 
-.cart-btn:hover {
-  background-color: #15803d;
-}
+.cart-btn:hover { background-color: #15803d; }
+.cart-btn:active { transform: scale(0.98); }
 
 .cart-badge {
   display: flex;
@@ -93,28 +98,36 @@
 
 .cart-count {
   position: absolute;
-  top: -8px;
-  right: -10px;
-  width: 18px;
-  height: 18px;
+  top: -10px;
+  right: -12px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
   background-color: #ffffff;
   color: #16a34a;
   border-radius: var(--radius-full);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: var(--weight-medium);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.cart-center {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
 }
 
 .cart-total {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
-/* ── M-Pesa screens ──────────────────────── */
+/* ── M-Pesa waiting screen ──────────────── */
 
 .mpesa-screen {
   min-height: 100dvh;
@@ -125,33 +138,13 @@
   gap: var(--space-5);
   padding: var(--space-8) var(--space-6);
   text-align: center;
-  background-color: #f8f7f4;
+  background-color: #f5f3f0;
 }
 
-.mpesa-spinner {
-  color: #16a34a;
-  animation: spin var(--duration-slow) linear infinite;
-  flex-shrink: 0;
-}
-
-.mpesa-error-icon {
-  color: #dc2626;
-  flex-shrink: 0;
-}
-
-.mpesa-title {
-  font-size: var(--text-2xl);
-  font-weight: var(--weight-medium);
-  color: #18181b;
-  letter-spacing: var(--tracking-tight);
-}
-
-.mpesa-sub {
-  font-size: var(--text-base);
-  color: #71717a;
-  line-height: var(--leading-relaxed);
-  max-width: 300px;
-}
+.mpesa-spinner { color: #16a34a; animation: spin var(--duration-slow) linear infinite; flex-shrink: 0; }
+.mpesa-error-icon { color: #dc2626; flex-shrink: 0; }
+.mpesa-title { font-size: var(--text-2xl); font-weight: var(--weight-medium); color: #1a1a1a; letter-spacing: -0.02em; }
+.mpesa-sub { font-size: var(--text-base); color: #71717a; line-height: var(--leading-relaxed); max-width: 300px; }
 
 .mpesa-detail {
   display: flex;
@@ -159,59 +152,32 @@
   gap: var(--space-1);
   padding: var(--space-4) var(--space-6);
   background-color: #ffffff;
-  border: 1px solid #e2ddd8;
-  border-radius: var(--radius-lg);
+  border: 1px solid #ede9e4;
+  border-radius: var(--radius-xl);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  color: #18181b;
+  color: #1a1a1a;
   font-weight: var(--weight-medium);
   min-width: 200px;
 }
 
-.mpesa-hint {
-  font-size: var(--text-xs);
-  color: #a1a1aa;
-  max-width: 260px;
-}
-
-.mpesa-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  width: 100%;
-  max-width: 320px;
-}
+.mpesa-hint { font-size: var(--text-xs); color: #a1a1aa; max-width: 260px; }
+.mpesa-actions { display: flex; flex-direction: column; gap: var(--space-3); width: 100%; max-width: 320px; }
 
 .mpesa-retry {
-  width: 100%;
-  padding: var(--space-4);
-  background-color: #16a34a;
-  color: #ffffff;
-  border: none;
-  border-radius: var(--radius-lg);
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  font-weight: var(--weight-medium);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-out);
+  width: 100%; padding: var(--space-4);
+  background-color: #16a34a; color: #ffffff;
+  border: none; border-radius: var(--radius-xl);
+  font-family: var(--font-sans); font-size: var(--text-base); font-weight: var(--weight-medium);
+  cursor: pointer; transition: background-color var(--duration-fast) var(--ease-out);
 }
-
 .mpesa-retry:hover { background-color: #15803d; }
 
 .mpesa-cash {
-  width: 100%;
-  padding: var(--space-3);
-  background: transparent;
-  color: #71717a;
-  border: 1px solid #e2ddd8;
-  border-radius: var(--radius-lg);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
+  width: 100%; padding: var(--space-3);
+  background: transparent; color: #71717a;
+  border: 1px solid #e2ddd8; border-radius: var(--radius-xl);
+  font-family: var(--font-sans); font-size: var(--text-sm);
+  cursor: pointer; transition: all var(--duration-fast) var(--ease-out);
 }
-
-.mpesa-cash:hover {
-  border-color: #ccc8c2;
-  color: #18181b;
-}
+.mpesa-cash:hover { border-color: #ccc8c2; color: #18181b; }

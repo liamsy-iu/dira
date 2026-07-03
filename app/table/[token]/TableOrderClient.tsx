@@ -274,7 +274,7 @@ export function TableOrderClient({
     <div className={styles.page} data-theme="light">
       <header className={styles.header}>
         <div className={styles['header-inner']}>
-          <div>
+          <div className={styles['header-left']}>
             <h1 className={styles['business-name']}>{businessName}</h1>
             <p className={styles['table-label']}>{tableLabel}</p>
           </div>
@@ -301,7 +301,7 @@ export function TableOrderClient({
           >
             <button className={styles['cart-btn']} onClick={() => setCartOpen(true)}>
               <span className={styles['cart-badge']}>
-                <ShoppingBag size={18} strokeWidth={1.5} />
+                <ShoppingBag size={20} strokeWidth={1.5} />
                 <motion.span
                   key={cartCount}
                   className={styles['cart-count']}
@@ -312,7 +312,7 @@ export function TableOrderClient({
                   {cartCount}
                 </motion.span>
               </span>
-              <span>View order</span>
+              <span className={styles['cart-center']}>View order</span>
               <span className={styles['cart-total']}>{formatKES(totalWithTax)}</span>
             </button>
           </motion.div>
