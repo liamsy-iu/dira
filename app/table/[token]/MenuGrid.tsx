@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
 import { formatKES } from '@/lib/utils'
@@ -39,11 +40,8 @@ function placeholderColor(name: string): string {
   return PLACEHOLDER_COLORS[hash % PLACEHOLDER_COLORS.length] ?? '#f5f3f0'
 }
 
-function scrollToCategory(id: string) {
-  document.getElementById(`cat-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
 export function MenuGrid({ products, getQuantity, onAdd, onRemove }: MenuGridProps) {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const categories = getCategories(products)
 
   const grouped = products.reduce<Record<string, Product[]>>((acc, p) => {
@@ -52,6 +50,13 @@ export function MenuGrid({ products, getQuantity, onAdd, onRemove }: MenuGridPro
     acc[cat].push(p)
     return acc
   }, {})
+
+  // Only show the selected category, or all if none selected
+  const visibleCategories = activeCategory ? [activeCategory] : categories
+
+  function handleTabClick(cat: string) {
+    setActiveCategory((prev) => (prev === cat ? null : cat))
+  }
 
   if (products.length === 0) {
     return <div className={styles.empty}><p>No items available right now</p></div>
@@ -62,14 +67,26 @@ export function MenuGrid({ products, getQuantity, onAdd, onRemove }: MenuGridPro
       {categories.length > 1 && (
         <div className={styles.tabs}>
           {categories.map((cat) => (
-            <button key={cat} className={styles.tab} onClick={() => scrollToCategory(cat)}>
+            <button
+              key={cat}
+              className={`${styles.tab} ${activeCategory === cat ? styles['tab-active'] : ''}`}
+              onClick={() => handleTabClick(cat)}
+            >
               {cat}
             </button>
           ))}
         </div>
       )}
 
-      {categories.map((cat) => (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeCategory ?? 'all'}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
+        >
+          {visibleCategories.map((cat) => (
         <section key={cat} id={`cat-${cat}`} className={styles.section}>
           <h2 className={styles['section-title']}>{cat}</h2>
           <div className={styles.list}>
@@ -159,6 +176,8 @@ export function MenuGrid({ products, getQuantity, onAdd, onRemove }: MenuGridPro
           </div>
         </section>
       ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
