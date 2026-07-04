@@ -29,6 +29,14 @@ export async function POST(request: NextRequest) {
     CallbackMetadata,
   } = callback
 
+  // Log everything so we can debug production failures
+  console.log('[MPESA CALLBACK RECEIVED]', JSON.stringify({
+    CheckoutRequestID,
+    ResultCode,
+    ResultDesc,
+    hasMetadata: !!CallbackMetadata,
+  }))
+
   if (!CheckoutRequestID) return OK
 
   const supabase = createServiceClient()
