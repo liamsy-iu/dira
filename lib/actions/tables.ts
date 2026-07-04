@@ -41,6 +41,24 @@ export async function deleteTableAction(id: string) {
   return { success: true }
 }
 
+export async function toggleTableStatusAction(id: string, currentStatus: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated.' }
+
+  const nextStatus = currentStatus === 'available' ? 'occupied' : 'available'
+
+  const { error } = await supabase
+    .from('dining_tables')
+    .update({ status: nextStatus })
+    .eq('id', id)
+
+  if (error) return { error: 'Failed to update table status.' }
+
+  revalidatePath('/tables')
+  return { success: true, status: nextStatus }
+}
+
 export async function updateTableLabelAction(id: string, label: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
