@@ -64,6 +64,11 @@ export async function getDarajaToken(): Promise<string> {
 
   if (!res.ok) {
     const text = await res.text()
+    console.error('[Daraja token failed]', {
+      status: res.status,
+      body: text,
+      env: process.env.MPESA_ENV,
+    })
     throw new Error(`Daraja token error: ${text}`)
   }
 
@@ -97,6 +102,9 @@ export async function initiateSTKPush({
   const token = await getDarajaToken()
   const { password, timestamp } = generateDarajaPassword()
   const shortcode = process.env.MPESA_SHORTCODE!
+  // For Till (Buy Goods): PartyB is the Till number
+  // For PayBill: PartyB equals the shortcode
+  const partyB = process.env.MPESA_TILL_NUMBER ?? shortcode
   const amountKES = Math.ceil(amountCents / 100)
 
   const res = await fetch(`${DARAJA_BASE}/mpesa/stkpush/v1/processrequest`, {
@@ -109,10 +117,10 @@ export async function initiateSTKPush({
       BusinessShortCode: shortcode,
       Password: password,
       Timestamp: timestamp,
-      TransactionType: 'CustomerPayBillOnline',
+      TransactionType: process.env.MPESA_TRANSACTION_TYPE ?? 'CustomerPayBillOnline',
       Amount: amountKES,
       PartyA: phone,
-      PartyB: shortcode,
+      PartyB: partyB,
       PhoneNumber: phone,
       CallBackURL: callbackUrl,
       AccountReference: orderRef,
@@ -123,7 +131,16 @@ export async function initiateSTKPush({
 
   if (!res.ok) {
     const text = await res.text()
-    throw new Error(`STK push error: ${text}`)
+    console.error('[Daraja STK Push failed]', {
+      status: res.status,
+      body: text,
+      phone,
+      amountKES,
+      orderRef,
+      env: process.env.MPESA_ENV,
+      shortcode: process.env.MPESA_SHORTCODE,
+    })
+    throw new Error(`STK push error ${res.status}: ${text}`)
   }
 
   return (await res.json()) as STKPushResult
