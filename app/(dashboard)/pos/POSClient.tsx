@@ -54,36 +54,58 @@ export function POSClient({ products }: { products: Product[] }) {
   function startMpesaPolling(orderId: string, orderRef: string, total: number) {
     setPaymentState({ status: 'waiting', orderRef, total })
 
+    async function checkStatus() {
+      const { data: order } = await supabase
+        .from('orders')
+        .select('payment_status')
+        .eq('id', orderId)
+        .single()
+
+      if (order?.payment_status === 'completed') {
+        cleanup()
+        const { data: tx } = await supabase
+          .from('mpesa_transactions')
+          .select('mpesa_receipt')
+          .eq('order_id', orderId)
+          .single()
+        setPaymentState({ status: 'success', orderId, orderRef, total, receipt: tx?.mpesa_receipt ?? undefined })
+      } else if (order?.payment_status === 'failed') {
+        cleanup()
+        setPaymentState({ status: 'failed', reason: 'M-Pesa payment was cancelled or failed.' })
+      }
+    }
+
+    // Realtime — instant on desktop when tab stays active
     const channel = supabase
       .channel(`order-payment-${orderId}`)
       .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'orders',
+        event: 'UPDATE', schema: 'public', table: 'orders',
         filter: `id=eq.${orderId}`,
-      }, async (payload) => {
-        const paymentStatus = payload.new.payment_status
-        if (paymentStatus === 'completed') {
-          supabase.removeChannel(channel)
-          const { data: tx } = await supabase
-            .from('mpesa_transactions')
-            .select('mpesa_receipt')
-            .eq('order_id', orderId)
-            .single()
-          setPaymentState({ status: 'success', orderId, orderRef, total, receipt: tx?.mpesa_receipt ?? undefined })
-        } else if (paymentStatus === 'failed') {
-          supabase.removeChannel(channel)
-          setPaymentState({ status: 'failed', reason: 'M-Pesa payment was cancelled or failed.' })
-        }
-      })
+      }, () => checkStatus())
       .subscribe()
 
-    setTimeout(() => {
-      supabase.removeChannel(channel)
+    // Polling fallback — catches mobile where Realtime drops when backgrounded
+    const pollInterval = setInterval(checkStatus, 3000)
+
+    // Page Visibility — fires immediately when user returns from M-Pesa app
+    function handleVisibility() {
+      if (!document.hidden) checkStatus()
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    const timeout = setTimeout(() => {
+      cleanup()
       setPaymentState((s) =>
         s.status === 'waiting' ? { status: 'failed', reason: 'Payment timed out. Please try again.' } : s
       )
-    }, 120000)
+    }, 180000)
+
+    function cleanup() {
+      supabase.removeChannel(channel)
+      clearInterval(pollInterval)
+      clearTimeout(timeout)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
   }
 
   function handlePlaceOrder(paymentMethod: 'cash' | 'mpesa', phone?: string) {

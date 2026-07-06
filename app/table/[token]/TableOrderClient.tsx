@@ -86,44 +86,61 @@ export function TableOrderClient({
     setCartOpen(false)
     setCart([])
 
-    // Realtime subscription — instant update when callback fires
+    async function checkStatus() {
+      const { data } = await supabase
+        .from('orders')
+        .select('payment_status')
+        .eq('id', orderId)
+        .single()
+
+      if (data?.payment_status === 'completed') {
+        cleanup()
+        setMpesaState({ status: 'idle' })
+        setConfirmedRef(orderRef)
+        setConfirmedTotal(total)
+      } else if (data?.payment_status === 'failed') {
+        cleanup()
+        setMpesaState({ status: 'failed', reason: 'Payment was cancelled or failed.', orderId, orderRef, total, phone })
+      }
+    }
+
+    // Realtime — instant on desktop when tab stays active
     const channel = supabase
       .channel(`table-order-payment-${orderId}`)
       .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'orders',
+        event: 'UPDATE', schema: 'public', table: 'orders',
         filter: `id=eq.${orderId}`,
-      }, (payload) => {
-        const paymentStatus = payload.new.payment_status
-        if (paymentStatus === 'completed') {
-          supabase.removeChannel(channel)
-          channelRef.current = null
-          setMpesaState({ status: 'idle' })
-          setConfirmedRef(orderRef)
-          setConfirmedTotal(total)
-        } else if (paymentStatus === 'failed') {
-          supabase.removeChannel(channel)
-          channelRef.current = null
-          setMpesaState({ status: 'failed', reason: 'Payment was cancelled or failed.', orderId, orderRef, total, phone })
-        }
-      })
+      }, () => checkStatus())
       .subscribe()
 
     channelRef.current = channel
 
-    // Timeout after 2 minutes
-    setTimeout(() => {
-      if (channelRef.current === channel) {
-        supabase.removeChannel(channel)
-        channelRef.current = null
-        setMpesaState((s) =>
-          s.status === 'waiting'
-            ? { status: 'failed', reason: 'Payment timed out. Please try again.', orderId, orderRef, total, phone }
-            : s
-        )
-      }
-    }, 120000)
+    // Polling fallback — catches mobile where Realtime drops when tab is backgrounded
+    const pollInterval = setInterval(checkStatus, 3000)
+
+    // Page Visibility — fires immediately when customer returns from M-Pesa app
+    function handleVisibility() {
+      if (!document.hidden) checkStatus()
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    // Timeout after 3 minutes
+    const timeout = setTimeout(() => {
+      cleanup()
+      setMpesaState((s) =>
+        s.status === 'waiting'
+          ? { status: 'failed', reason: 'Payment timed out. Please try again.', orderId, orderRef, total, phone }
+          : s
+      )
+    }, 180000)
+
+    function cleanup() {
+      if (channelRef.current) supabase.removeChannel(channelRef.current)
+      channelRef.current = null
+      clearInterval(pollInterval)
+      clearTimeout(timeout)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
   }
 
   function handlePlaceOrder(paymentMethod: 'cash' | 'mpesa', phone?: string) {
