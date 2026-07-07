@@ -41,11 +41,8 @@ export function SplitBillModal({
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | undefined>()
 
-  const cartSubtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0)
-  const cartTax = Math.round(cartSubtotal * 0.16)
-  const cartTotal = cartSubtotal + cartTax
-
-  // Per-split amounts for preview
+  const cartTotal = cart.reduce((s, i) => s + i.price * i.quantity, 0)
+  // VAT is already included in prices
   const baseAmount = Math.floor(cartTotal / splitCount)
   const remainder = cartTotal - baseAmount * (splitCount - 1)
 

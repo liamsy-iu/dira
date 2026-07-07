@@ -70,8 +70,8 @@ export async function createSplitOrderAction(input: {
   })
 
   const subtotal = lineItems.reduce((sum, i) => sum + i.subtotal, 0)
-  const tax = Math.round(subtotal * 0.16)
-  const total = subtotal + tax
+  const tax = Math.round(subtotal * 16 / 116) // VAT included in price
+  const total = subtotal // Price already includes VAT
 
   // Compute splits — last person gets the remainder to avoid rounding gaps
   const baseAmount = Math.floor(total / input.splitCount)

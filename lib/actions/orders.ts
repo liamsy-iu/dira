@@ -82,8 +82,8 @@ export async function createWalkInOrderAction(input: {
   })
 
   const subtotal = lineItems.reduce((sum, i) => sum + i.subtotal, 0)
-  const tax = Math.round(subtotal * 0.16)
-  const total = subtotal + tax
+  const tax = Math.round(subtotal * 16 / 116) // VAT included in price
+  const total = subtotal // Price already includes VAT
   const orderRef = generateOrderRef()
 
   // Sequential invoice number per business for TIMS compliance
@@ -190,8 +190,8 @@ export async function placeOrderAction(input: PlaceOrderInput) {
   })
 
   const subtotal = lineItems.reduce((sum, i) => sum + i.subtotal, 0)
-  const tax = Math.round(subtotal * 0.16) // 16% VAT
-  const total = subtotal + tax
+  const tax = Math.round(subtotal * 16 / 116) // VAT included in price // 16% VAT
+  const total = subtotal // Price already includes VAT
   const orderRef = generateOrderRef()
 
   // 4. Create order

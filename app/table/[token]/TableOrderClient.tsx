@@ -285,7 +285,7 @@ export function TableOrderClient({
     )
   }
 
-  const totalWithTax = cartTotal + Math.round(cartTotal * 0.16)
+  const totalWithTax = cartTotal // VAT already included in prices
 
   return (
     <div className={styles.page} data-theme="light">

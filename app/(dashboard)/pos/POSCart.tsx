@@ -31,9 +31,8 @@ export function POSCart({
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'mpesa'>('cash')
   const [phone, setPhone] = useState('')
 
-  const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const tax = Math.round(subtotal * 0.16)
-  const total = subtotal + tax
+  const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
+  const vatIncluded = Math.round(total * 16 / 116)
 
   if (paymentState.status === 'waiting') {
     return (
@@ -114,9 +113,8 @@ export function POSCart({
       </div>
 
       <div className={styles.totals}>
-        <div className={styles['total-row']}><span>Subtotal</span><span>{formatKES(subtotal)}</span></div>
-        <div className={styles['total-row']}><span>VAT 16%</span><span>{formatKES(tax)}</span></div>
         <div className={`${styles['total-row']} ${styles['total-final']}`}><span>Total</span><span>{formatKES(total)}</span></div>
+        <div className={styles['total-row']}><span>VAT included (16%)</span><span>{formatKES(vatIncluded)}</span></div>
       </div>
 
       <div className={styles.payment}>
