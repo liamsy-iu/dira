@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     if (order) {
       const businessName = (order.businesses as any)?.name ?? ''
       const receiptUrl = `${process.env.NEXT_PUBLIC_APP_URL}/receipt/${transaction.order_id}`
-      sendWhatsAppReceipt({
+      await sendWhatsAppReceipt({
         phone: transaction.phone as string,
         orderRef: order.order_ref as string,
         total: order.total as number,
