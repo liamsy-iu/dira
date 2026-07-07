@@ -37,6 +37,8 @@ export function KitchenClient({ businessId }: { businessId: string }) {
   const supabase = createClient()
 
   const loadOrders = useCallback(async () => {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+
     const { data } = await supabase
       .from('orders')
       .select(`
@@ -46,6 +48,7 @@ export function KitchenClient({ businessId }: { businessId: string }) {
       `)
       .eq('business_id', businessId)
       .in('status', ACTIVE_STATUSES)
+      .gte('created_at', since)
       .order('created_at', { ascending: true })
 
     setOrders((data as unknown as KitchenOrder[]) ?? [])
