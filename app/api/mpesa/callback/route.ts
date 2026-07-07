@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { sendWhatsAppReceipt } from '@/lib/whatsapp'
 
 /**
  * Safaricom calls this endpoint after the customer enters their PIN.
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
       completed_at: new Date().toISOString(),
     })
     .eq('checkout_request_id', CheckoutRequestID)
-    .select('order_id')
+    .select('order_id, phone')   // ← phone needed for WhatsApp
     .single()
 
   if (!transaction?.order_id) return OK
@@ -76,6 +77,27 @@ export async function POST(request: NextRequest) {
       updated_at: new Date().toISOString(),
     })
     .eq('id', transaction.order_id)
+
+  // 3. Send WhatsApp receipt — fire and forget, never blocks payment
+  if (isSuccess && mpesaReceipt) {
+    const { data: order } = await supabase
+      .from('orders')
+      .select('order_ref, total, businesses ( name )')
+      .eq('id', transaction.order_id)
+      .single()
+
+    if (order) {
+      const businessName = (order.businesses as any)?.name ?? ''
+      const receiptUrl = `${process.env.NEXT_PUBLIC_APP_URL}/receipt/${transaction.order_id}`
+      sendWhatsAppReceipt({
+        phone: transaction.phone as string,
+        orderRef: order.order_ref as string,
+        total: order.total as number,
+        businessName,
+        receiptUrl,
+      }).catch(console.error)
+    }
+  }
 
   return OK
 }

@@ -27,6 +27,7 @@ interface DiraStore {
   products: Product[]
   tables: DiningTable[]
   initialized: boolean
+  role: 'owner' | 'cashier'
 
   initialize: () => Promise<void>
   refresh: () => Promise<void>
@@ -155,6 +156,7 @@ export const useDiraStore = create<DiraStore>((set, get) => ({
   products: [],
   tables: [],
   initialized: false,
+  role: 'owner' as const,
 
   initialize: async () => {
     if (get().initialized) return
@@ -163,6 +165,23 @@ export const useDiraStore = create<DiraStore>((set, get) => ({
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
+    // ── Cashier: invited staff with metadata in user_metadata ─────────
+    const staffBusinessId   = session.user.user_metadata?.staff_business_id   as string | undefined
+    const staffBusinessName = session.user.user_metadata?.staff_business_name as string | undefined
+
+    if (staffBusinessId) {
+      const cached = readCache(staffBusinessId)
+      if (cached) {
+        set({ businessId: staffBusinessId, businessName: staffBusinessName ?? '', role: 'cashier', products: cached.products, tables: cached.tables, initialized: true })
+        get().refresh()
+        return
+      }
+      const result = await loadData(staffBusinessId, staffBusinessName ?? '')
+      set({ businessId: staffBusinessId, businessName: staffBusinessName ?? '', role: 'cashier', ...result, initialized: true })
+      return
+    }
+
+    // ── Owner: business_id in app_metadata ────────────────────────────
     const businessId   = session.user.app_metadata?.business_id   as string | undefined
     const businessName = session.user.app_metadata?.business_name as string | undefined
 

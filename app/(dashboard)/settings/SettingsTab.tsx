@@ -2,6 +2,7 @@
 
 import { useDiraStore } from '@/lib/store/dira'
 import { SettingsForm } from './SettingsForm'
+import { StaffSection } from './StaffSection'
 import { Spinner } from '@/components/ui/Spinner/Spinner'
 import styles from './page.module.css'
 
@@ -26,6 +27,7 @@ export function SettingsTab() {
         <p className={styles.subtitle}>Manage your business profile</p>
       </div>
       <SettingsForm business={business} />
+      <StaffSection />
     </div>
   )
 }

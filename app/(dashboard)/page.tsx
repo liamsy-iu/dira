@@ -4,6 +4,7 @@ import { lazy, Suspense, useState } from 'react'
 import { Sidebar } from '@/components/layout/Sidebar/Sidebar'
 import { Topbar } from '@/components/layout/Topbar/Topbar'
 import { Spinner } from '@/components/ui/Spinner/Spinner'
+import { useDiraStore } from '@/lib/store/dira'
 import styles from './dashboard.module.css'
 
 import type { DashboardTab } from '@/lib/types/dashboard'
@@ -27,22 +28,30 @@ function TabSpinner() {
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview')
+  const role = useDiraStore((s) => s.role)
+
+  // Cashiers only see POS and Kitchen
+  const isOwner = role === 'owner'
+
+  // Keep active tab valid when role is cashier
+  const effectiveTab = !isOwner && activeTab !== 'pos' && activeTab !== 'kitchen'
+    ? 'pos'
+    : activeTab
 
   return (
     <div className={styles.shell}>
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Sidebar activeTab={effectiveTab} onTabChange={setActiveTab} role={role} />
       <div className={styles.main}>
         <Topbar title="Dira" />
         <main className={styles.content} id="main-content">
         <Suspense fallback={<TabSpinner />}>
-          <div style={{ display: activeTab === 'overview'  ? 'block' : 'none' }}><Overview /></div>
-          <div style={{ display: activeTab === 'pos'       ? 'block' : 'none' }}><POSTab /></div>
-          {/* Kitchen stays mounted always — keeps Realtime alive, no missed orders */}
-          <div style={{ display: activeTab === 'kitchen'   ? 'block' : 'none' }}><KitchenTab /></div>
-          <div style={{ display: activeTab === 'menu'      ? 'block' : 'none' }}><MenuTab /></div>
-          <div style={{ display: activeTab === 'tables'    ? 'block' : 'none' }}><TablesTab /></div>
-          <div style={{ display: activeTab === 'reports'   ? 'block' : 'none' }}><ReportsTab /></div>
-          <div style={{ display: activeTab === 'settings'  ? 'block' : 'none' }}><SettingsTab /></div>
+          <div style={{ display: effectiveTab === 'overview'  ? 'block' : 'none' }}>{isOwner && <Overview />}</div>
+          <div style={{ display: effectiveTab === 'pos'       ? 'block' : 'none' }}><POSTab /></div>
+          <div style={{ display: effectiveTab === 'kitchen'   ? 'block' : 'none' }}><KitchenTab /></div>
+          <div style={{ display: effectiveTab === 'menu'      ? 'block' : 'none' }}>{isOwner && <MenuTab />}</div>
+          <div style={{ display: effectiveTab === 'tables'    ? 'block' : 'none' }}>{isOwner && <TablesTab />}</div>
+          <div style={{ display: effectiveTab === 'reports'   ? 'block' : 'none' }}>{isOwner && <ReportsTab />}</div>
+          <div style={{ display: effectiveTab === 'settings'  ? 'block' : 'none' }}>{isOwner && <SettingsTab />}</div>
         </Suspense>
         </main>
       </div>

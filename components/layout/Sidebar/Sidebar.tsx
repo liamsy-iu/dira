@@ -26,10 +26,13 @@ const primaryNav: NavItem[] = [
 interface SidebarProps {
   activeTab: DashboardTab
   onTabChange: (tab: DashboardTab) => void
+  role?: 'owner' | 'cashier'
   pendingOrders?: number
 }
 
-export function Sidebar({ activeTab, onTabChange, pendingOrders = 0 }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, role = 'owner', pendingOrders = 0 }: SidebarProps) {
+  const isOwner = role === 'owner'
+  const visibleNav = isOwner ? primaryNav : primaryNav.filter((i) => i.tab === 'pos' || i.tab === 'kitchen')
   return (
     <aside className={styles.sidebar}>
       {/* Brand */}
@@ -43,7 +46,7 @@ export function Sidebar({ activeTab, onTabChange, pendingOrders = 0 }: SidebarPr
       {/* Nav */}
       <nav className={styles.nav} aria-label="Main navigation">
         <div className={styles['nav-section']}>
-          {primaryNav.map((item) => {
+          {visibleNav.map((item) => {
             const isActive = activeTab === item.tab
             const badge = item.tab === 'kitchen' && pendingOrders > 0 ? pendingOrders : undefined
 
@@ -67,14 +70,15 @@ export function Sidebar({ activeTab, onTabChange, pendingOrders = 0 }: SidebarPr
 
       {/* Bottom */}
       <div className={styles.bottom}>
-        <button
-          className={`${styles['nav-item']} ${activeTab === 'settings' ? styles.active : ''}`}
-          onClick={() => onTabChange('settings')}
-          aria-current={activeTab === 'settings' ? 'page' : undefined}
-        >
-          <span className={styles['nav-item-icon']}><Settings size={18} strokeWidth={1.5} /></span>
-          Settings
-        </button>
+        {isOwner && (
+          <button
+            className={`${styles['nav-item']} ${activeTab === 'settings' ? styles.active : ''}`}
+            onClick={() => onTabChange('settings')}
+          >
+            <span className={styles['nav-item-icon']}><Settings size={18} strokeWidth={1.5} /></span>
+            Settings
+          </button>
+        )}
 
         <form action={logoutAction}>
           <button type="submit" className={styles['nav-item']}>
