@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     .eq('id', transaction.order_id)
 
   // 3. Send WhatsApp receipt — fire and forget, never blocks payment
-  if (isSuccess && mpesaReceipt) {
+  if (isSuccess) {
     const { data: order } = await supabase
       .from('orders')
       .select('order_ref, total, businesses ( name )')

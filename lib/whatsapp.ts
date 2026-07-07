@@ -20,9 +20,9 @@ export async function sendWhatsAppReceipt({
   businessName,
   receiptUrl,
 }: {
-  phone: string       // Kenyan format: 254XXXXXXXXX
+  phone: string
   orderRef: string
-  total: number       // in cents
+  total: number
   businessName: string
   receiptUrl: string
 }): Promise<void> {
@@ -30,8 +30,14 @@ export async function sendWhatsAppReceipt({
   const authToken  = process.env.TWILIO_AUTH_TOKEN
   const from       = process.env.TWILIO_WHATSAPP_FROM
 
-  // Silently skip if WhatsApp isn't configured
-  if (!accountSid || !authToken || !from) return
+  if (!accountSid || !authToken || !from) {
+    console.log('[WhatsApp] Skipped — Twilio env vars not set', {
+      hasAccountSid: !!accountSid,
+      hasAuthToken: !!authToken,
+      hasFrom: !!from,
+    })
+    return
+  }
 
   const to = `whatsapp:+${phone.replace(/^\+/, '')}`
   const fromFormatted = from.startsWith('whatsapp:') ? from : `whatsapp:${from}`
@@ -51,7 +57,9 @@ export async function sendWhatsAppReceipt({
     receiptUrl,
   ].join('\n')
 
-  await fetch(
+  console.log('[WhatsApp] Sending to', to, 'from', fromFormatted)
+
+  const res = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
     {
       method: 'POST',
@@ -62,4 +70,7 @@ export async function sendWhatsAppReceipt({
       body: new URLSearchParams({ From: fromFormatted, To: to, Body: body }).toString(),
     }
   )
+
+  const result = await res.json()
+  console.log('[WhatsApp] Twilio response', res.status, JSON.stringify(result))
 }
