@@ -54,7 +54,10 @@ export function POSCart({
         <p className={styles['success-ref']}>{paymentState.orderRef}</p>
         <p className={styles['success-total']}>{formatKES(paymentState.total)}</p>
         {paymentState.receipt && (
-          <p className={styles['success-receipt']}>M-Pesa: {paymentState.receipt}</p>
+          <div className={styles['mpesa-code-wrap']}>
+            <p className={styles['mpesa-code-label']}>M-Pesa Code</p>
+            <p className={styles['mpesa-code']}>{paymentState.receipt}</p>
+          </div>
         )}
         <div className={styles['success-actions']}>
           <Button variant="ghost" size="sm" href={`/receipt/${paymentState.orderId}`}>

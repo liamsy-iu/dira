@@ -42,6 +42,7 @@ export function TableOrderClient({
   const [orderError, setOrderError] = useState<string | undefined>()
   const [confirmedRef, setConfirmedRef] = useState<string | null>(null)
   const [confirmedTotal, setConfirmedTotal] = useState(0)
+  const [mpesaCode, setMpesaCode] = useState<string | null>(null)
   const [mpesaState, setMpesaState] = useState<MpesaState>({ status: 'idle' })
   const [isPending, startTransition] = useTransition()
   const supabase = createClient()
@@ -95,6 +96,13 @@ export function TableOrderClient({
 
       if (data?.payment_status === 'completed') {
         cleanup()
+        // Fetch M-Pesa code so customer can show it to cashier
+        const { data: tx } = await supabase
+          .from('mpesa_transactions')
+          .select('mpesa_receipt')
+          .eq('order_id', orderId)
+          .single()
+        setMpesaCode(tx?.mpesa_receipt ?? null)
         setMpesaState({ status: 'idle' })
         setConfirmedRef(orderRef)
         setConfirmedTotal(total)
@@ -280,7 +288,8 @@ export function TableOrderClient({
         total={confirmedTotal}
         tableLabel={tableLabel}
         businessName={businessName}
-        onNewOrder={() => setConfirmedRef(null)}
+        mpesaCode={mpesaCode}
+        onNewOrder={() => { setConfirmedRef(null); setMpesaCode(null) }}
       />
     )
   }

@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { CheckCircle2, Copy, Check } from 'lucide-react'
 import { formatKES } from '@/lib/utils'
 import styles from './OrderConfirmation.module.css'
 
@@ -9,6 +11,7 @@ interface OrderConfirmationProps {
   total: number
   tableLabel: string
   businessName: string
+  mpesaCode?: string | null
   onNewOrder: () => void
 }
 
@@ -17,93 +20,92 @@ export function OrderConfirmation({
   total,
   tableLabel,
   businessName,
+  mpesaCode,
   onNewOrder,
 }: OrderConfirmationProps) {
+  const [copied, setCopied] = useState(false)
+
+  async function handleCopyCode() {
+    if (!mpesaCode) return
+    await navigator.clipboard.writeText(mpesaCode)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
-    <div className={styles.page} data-theme="light">
+    <div className={styles.page}>
       <motion.div
         className={styles.card}
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
       >
-        {/* Animated checkmark */}
+        {/* Check */}
         <motion.div
           className={styles.check}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{
-            type: 'spring',
-            damping: 12,
-            stiffness: 200,
-            delay: 0.1,
-          }}
+          transition={{ type: 'spring', damping: 12, stiffness: 400, delay: 0.15 }}
         >
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            fill="none"
-            aria-hidden="true"
-          >
-            <motion.path
-              d="M7 16l7 7 11-12"
-              stroke="#ffffff"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
-            />
-          </svg>
+          <CheckCircle2 size={40} strokeWidth={1.5} color="#fff" />
         </motion.div>
 
-        {/* Message */}
-        <motion.div
-          className={styles.content}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-        >
+        {/* Title */}
+        <div className={styles.content}>
           <h1 className={styles.title}>Order placed!</h1>
           <p className={styles.subtitle}>
-            We've received your order at {tableLabel}, {businessName}.
-            We'll bring it to you shortly.
+            Your order has been sent to the kitchen at {businessName}
           </p>
-        </motion.div>
+        </div>
 
-        {/* Order details */}
-        <motion.div
-          className={styles.details}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-        >
+        {/* Details */}
+        <div className={styles.details}>
           <div className={styles['detail-row']}>
-            <span className={styles['detail-label']}>Order ref</span>
+            <span className={styles['detail-label']}>Table</span>
+            <span className={styles['detail-value']}>{tableLabel}</span>
+          </div>
+          <div className={styles['detail-row']}>
+            <span className={styles['detail-label']}>Order</span>
             <span className={styles['detail-value']}>{orderRef}</span>
           </div>
           <div className={styles['detail-row']}>
             <span className={styles['detail-label']}>Total</span>
             <span className={styles['detail-value']}>{formatKES(total)}</span>
           </div>
-          <div className={styles['detail-row']}>
-            <span className={styles['detail-label']}>Payment</span>
-            <span className={styles['detail-value']}>Pay at counter</span>
-          </div>
-        </motion.div>
+        </div>
 
-        {/* Order more */}
-        <motion.button
-          className={styles['order-more']}
-          onClick={onNewOrder}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          Add more items
-        </motion.button>
+        {/* M-Pesa code — prominent, copyable */}
+        {mpesaCode && (
+          <motion.div
+            className={styles['mpesa-wrap']}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <p className={styles['mpesa-label']}>M-Pesa Code</p>
+            <div className={styles['mpesa-code-row']}>
+              <span className={styles['mpesa-code']}>{mpesaCode}</span>
+              <button
+                className={styles['copy-btn']}
+                onClick={handleCopyCode}
+                aria-label="Copy M-Pesa code"
+              >
+                {copied
+                  ? <Check size={14} strokeWidth={2} />
+                  : <Copy size={14} strokeWidth={1.5} />
+                }
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+            <p className={styles['mpesa-hint']}>
+              The cashier may ask for this code to verify your payment
+            </p>
+          </motion.div>
+        )}
+
+        <button className={styles['order-more']} onClick={onNewOrder}>
+          + Add more items
+        </button>
       </motion.div>
     </div>
   )
