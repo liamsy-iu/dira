@@ -68,12 +68,26 @@ export async function POST(request: NextRequest) {
 
   if (!transaction?.order_id) return OK
 
+  // 2. Get the current order to determine correct next status
+  const { data: currentOrder } = await supabase
+    .from('orders')
+    .select('status')
+    .eq('id', transaction.order_id)
+    .single()
+
+  // Payment complete: move to 'confirmed' so kitchen sees it
+  // (unless already in kitchen flow — don't regress from preparing/ready)
+  const kitchenStatuses = ['preparing', 'ready', 'paid']
+  const nextStatus = isSuccess
+    ? kitchenStatuses.includes(currentOrder?.status ?? '') ? currentOrder?.status : 'confirmed'
+    : currentOrder?.status
+
   // 2. Update order payment status
   await supabase
     .from('orders')
     .update({
       payment_status: isSuccess ? 'completed' : 'failed',
-      ...(isSuccess ? { status: 'paid' } : {}),
+      ...(isSuccess ? { status: nextStatus, mpesa_receipt: mpesaReceipt } : {}),
       updated_at: new Date().toISOString(),
     })
     .eq('id', transaction.order_id)
