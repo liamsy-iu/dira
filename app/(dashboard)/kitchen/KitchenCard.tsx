@@ -15,6 +15,8 @@ interface KitchenOrder {
   order_ref: string
   status: OrderStatus
   created_at: string
+  payment_method: string | null
+  mpesa_receipt: string | null
   dining_tables: { label: string } | null
   order_items: OrderItem[]
 }
@@ -74,6 +76,14 @@ export function KitchenCard({ order, now, onAdvance }: KitchenCardProps) {
           </li>
         ))}
       </ul>
+
+      {/* M-Pesa code — visible to cashier, no need to ask customer */}
+      {order.mpesa_receipt && (
+        <div className={styles['mpesa-strip']}>
+          <span className={styles['mpesa-strip-label']}>M-Pesa</span>
+          <span className={styles['mpesa-strip-code']}>{order.mpesa_receipt}</span>
+        </div>
+      )}
 
       {config.next && (
         <button

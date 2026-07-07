@@ -21,6 +21,8 @@ interface KitchenOrder {
   order_ref: string
   status: OrderStatus
   created_at: string
+  payment_method: string | null
+  mpesa_receipt: string | null
   dining_tables: { label: string } | null
   order_items: OrderItem[]
 }
@@ -38,7 +40,7 @@ export function KitchenClient({ businessId }: { businessId: string }) {
     const { data } = await supabase
       .from('orders')
       .select(`
-        id, order_ref, status, created_at,
+        id, order_ref, status, created_at, payment_method, mpesa_receipt,
         dining_tables ( label ),
         order_items ( id, product_name, quantity, modifier_summary )
       `)
